@@ -2115,6 +2115,11 @@ document.getElementById('spread-history-overlay').addEventListener('click', e =>
   if (e.target === document.getElementById('spread-history-overlay')) closeSpreadHistoryModal();
 });
 
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js");
+  });
+}
 </script>
 </body>
 </html>
