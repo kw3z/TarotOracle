@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a0a12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>✦ Tarot Oracle ✦</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='8' fill='%230a0a12'/><rect x='18' y='8' width='28' height='44' rx='3' fill='%231a1a2e' stroke='%23f5c842' stroke-width='2'/><rect x='22' y='12' width='20' height='32' rx='1' fill='%230a0a12'/><text x='32' y='34' text-anchor='middle' font-size='18' fill='%23f5c842'>✦</text><text x='32' y='58' text-anchor='middle' font-size='7' fill='%23f5c842' font-family='monospace'>TAROT</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a12;
+    --bg2: #12121e;
+    --bg3: #1a1a2e;
+    --gold: #f5c842;
+    --gold2: #e6a817;
+    --pink: #e040a0;
+    --purple: #8b5cf6;
+    --text: #e8e0d0;
+    --text2: #a09080;
+    --border: #2a2a40;
+    --card-w: 120px;
+    --card-h: 210px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    image-rendering: pixelated;
+  }
+
+  /* PIXEL STAR BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, #fff8 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, #fff5 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, #fff6 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 80%, #fff4 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 35%, #fff7 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 85%, #fff3 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 45%, #fff5 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 60%, #fff6 0%, transparent 100%),
+      radial-gradient(2px 2px at 40% 30%, #f5c84222 0%, transparent 100%),
+      radial-gradient(2px 2px at 75% 15%, #8b5cf622 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 440px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    padding: 16px 16px 0;
+    text-align: center;
+  }
+  .header-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    text-shadow: 0 0 8px #f5c84288, 2px 2px 0 #8b5cf688;
+    letter-spacing: 2px;
+    line-height: 1.6;
+  }
+  .header-sub {
+    font-size: 14px;
+    color: var(--text2);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .pixel-divider {
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 4px, transparent 4px, transparent 8px);
+    margin: 12px 0 0;
+    opacity: 0.5;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg2);
+    border-top: 2px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 12px 8px;
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .nav-btn.active { color: var(--gold); }
+  .nav-icon { font-size: 18px; line-height: 1; }
+
+  /* MAIN CONTENT */
+  main {
+    flex: 1;
+    padding: 16px 16px 80px;
+    overflow-y: auto;
+  }
+
+  /* TABS */
+  .tab { display: none; }
+  .tab.active { display: block; }
+
+  /* ===== DRAW TAB ===== */
+  .section-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--gold2);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .options-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .pixel-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    padding: 8px 10px;
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    color: var(--text2);
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.1s;
+    image-rendering: pixelated;
+    position: relative;
+  }
+  .pixel-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; right: -3px;
+    width: 100%; height: 100%;
+    background: var(--border);
+    z-index: -1;
+  }
+  .pixel-btn.active, .pixel-btn:hover {
+    background: var(--bg2);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .pixel-btn.active::after { background: var(--gold2); }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .toggle-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--text2);
+    letter-spacing: 0.5px;
+  }
+  .pixel-toggle {
+    width: 40px; height: 20px;
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+  .pixel-toggle.on { border-color: var(--gold); }
+  .pixel-toggle::before {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    background: var(--border);
+    transition: all 0.15s;
+  }
+  .pixel-toggle.on::before {
+    left: 22px;
+    background: var(--gold);
+  }
+
+  /* BIG DRAW BUTTON */
+  .draw-btn-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .draw-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    padding: 14px 28px;
+    background: var(--bg3);
+    border: 3px solid var(--gold);
+    color: var(--gold);
+    cursor: pointer;
+    letter-spacing: 1px;
+    position: relative;
+    transition: all 0.1s;
+    text-shadow: 0 0 6px var(--gold);
+  }
+  .draw-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; right: -5px;
+    width: 100%; height: 100%;
+    background: var(--gold2);
+    z-index: -1;
+    opacity: 0.4;
+  }
+  .draw-btn:hover { background: #1a1a2e; box-shadow: 0 0 16px #f5c84244; }
+  .draw-btn:active { transform: translate(2px, 2px); }
+
+  /* CARD FLIP AREA - SINGLE */
+  .card-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    min-height: 240px;
+    gap: 12px;
+  }
+
+  /* 3-CARD SPREAD AREA */
+  .spread-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    min-height: 240px;
+    align-items: flex-start;
+    padding-top: 10px;
+  }
+  .spread-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .spread-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: var(--purple);
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  /* CARD FLIP */
+  .card-flip {
+    width: var(--card-w);
+    height: var(--card-h);
+    perspective: 600px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .card-flip-inner {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+  }
+  .card-flip.flipped .card-flip-inner { transform: rotateY(180deg); }
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%; height: 100%;
+    backface-visibility: hidden;
+    border: 3px solid var(--border);
+  }
+  .card-back {
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card-back-pattern {
+    width: 100%; height: 100%;
+    background:
+      repeating-linear-gradient(45deg, #f5c84211 0px, #f5c84211 2px, transparent 2px, transparent 8px),
+      repeating-linear-gradient(-45deg, #8b5cf611 0px, #8b5cf611 2px, transparent 2px, transparent 8px),
+      var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+  .card-front {
+    transform: rotateY(180deg);
+    overflow: hidden;
+    background: #111;
+  }
+  .card-front img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .card-front.reversed img {
+    transform: rotate(180deg);
+  }
+
+  .card-tap-hint {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: var(--text2);
+    text-align: center;
+    letter-spacing: 0.5px;
+    animation: blink 1.2s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* DRAWN CARD INFO */
+  .drawn-info {
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    padding: 14px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .drawn-info.visible { display: block; }
+  .drawn-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 6px;
+    text-shadow: 0 0 6px #f5c84266;
+    line-height: 1.6;
+  }
+  .drawn-meta {
+    font-size: 15px;
+    color: var(--text2);
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  .drawn-reversed-badge {
+    display: inline-block;
+    background: var(--pink);
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    padding: 3px 7px;
+    margin-top: 6px;
+  }
+
+  /* SPARKLE - DOM based */
+  #sparkle-container { position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden; }
+
+  /* ENLARGE BUTTONS */
+  .drawn-actions {
+    display: none;
+    justify-content: center;
+    margin: -4px 0 14px;
+  }
+  .enlarge-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    padding: 6px 10px;
+    background: var(--bg3);
+    border: 2px solid var(--purple);
+    color: var(--purple);
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    transition: all 0.1s;
+  }
+  .enlarge-btn:hover { background: var(--bg2); border-color: var(--gold); color: var(--gold); }
+
+  /* CARD DETAIL MODAL IMAGE */
+  .modal-img-large {
+    width: 100%;
+    max-width: 140px;
+    border: 2px solid var(--border);
+    image-rendering: auto;
+  }
+  .modal-reversed-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0 4px;
+  }
+  .modal-rev-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: var(--text2);
+    letter-spacing: 0.4px;
+  }
+  .modal-img-wrap.reversed-view img { transform: rotate(180deg); }
+
+  /* HISTORY HEADING */
+  .history-heading {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    text-align: center;
+    text-shadow: 0 0 6px #f5c84244;
+  }
+  .history-time {
+    font-size: 12px;
+    color: var(--purple);
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+  }
+
+  /* ===== INFO TAB ===== */
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .filter-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    padding: 6px 8px;
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    color: var(--text2);
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+  .filter-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--bg2);
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .grid-card {
+    cursor: pointer;
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: border-color 0.15s;
+  }
+  .grid-card:hover { border-color: var(--gold2); }
+  .grid-card img {
+    width: 100%;
+    aspect-ratio: 0.58;
+    object-fit: cover;
+    display: block;
+    image-rendering: auto;
+  }
+  .grid-card-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 5px;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+  }
+
+  /* CARD DETAIL MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000a;
+    z-index: 200;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px 12px 80px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2);
+    border: 3px solid var(--gold);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--gold2);
+  }
+  .modal-close {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: none;
+    border: 2px solid var(--border);
+    color: var(--text2);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 5px 8px;
+    cursor: pointer;
+  }
+  .modal-close:hover { border-color: var(--pink); color: var(--pink); }
+  .modal-img-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 20px 20px 0;
+  }
+  .modal-img-wrap img {
+    width: 110px;
+    border: 2px solid var(--border);
+    image-rendering: auto;
+  }
+  .modal-action-row {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 0;
+  }
+  .modal-body { padding: 16px 20px 20px; }
+  .modal-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 6px;
+    line-height: 1.6;
+    text-shadow: 0 0 6px #f5c84244;
+  }
+  .modal-meta {
+    font-size: 14px;
+    color: var(--text2);
+    text-align: center;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .modal-section {
+    margin-bottom: 12px;
+  }
+  .modal-section.hidden {
+    display: none;
+  }
+  .modal-section-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--purple);
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .modal-section-text {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.5;
+    background: var(--bg3);
+    border-left: 3px solid var(--border);
+    padding: 8px 10px;
+  }
+  .modal-section-text.hindi {
+    color: #d0c0e8;
+    font-size: 16px;
+    border-left-color: var(--purple);
+    margin-top: 4px;
+  }
+  .lang-badge {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 5px;
+    padding: 2px 5px;
+    display: inline-block;
+    margin-bottom: 3px;
+  }
+  .lang-en { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); }
+  .lang-hi { background: var(--bg3); border: 1px solid var(--purple); color: var(--purple); }
+
+  /* IMAGE-ONLY POPUP */
+  .image-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000c;
+    z-index: 210;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .image-modal-overlay.open { display: flex; }
+  .image-modal {
+    background: var(--bg2);
+    border: 3px solid var(--gold);
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--gold2);
+    padding: 44px 16px 16px;
+  }
+  .image-modal-wrap {
+    display: flex;
+    justify-content: center;
+  }
+  .image-modal-wrap img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 120px);
+    object-fit: contain;
+    border: 2px solid var(--border);
+    image-rendering: auto;
+  }
+  .image-modal-wrap.reversed-view img {
+    transform: rotate(180deg);
+  }
+
+  /* HISTORY SPREAD POPUP */
+  .spread-history-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000c;
+    z-index: 205;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .spread-history-overlay.open { display: flex; }
+  .spread-history-modal {
+    background: var(--bg2);
+    border: 3px solid var(--gold);
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--gold2);
+    padding: 44px 16px 18px;
+  }
+  .spread-history-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .spread-history-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .spread-history-card {
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    padding: 8px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .spread-history-card:hover { border-color: var(--gold2); }
+  .spread-history-card img {
+    width: 100%;
+    aspect-ratio: 0.58;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+    image-rendering: auto;
+  }
+  .spread-history-card.reversed-card img {
+    transform: rotate(180deg);
+  }
+  .spread-history-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 5px;
+    color: var(--purple);
+    margin-bottom: 4px;
+    line-height: 1.5;
+  }
+  .spread-history-card-name {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* ===== HISTORY TAB ===== */
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .history-item {
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .history-item:hover { border-color: var(--gold2); }
+  .history-item img {
+    width: 40px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    image-rendering: auto;
+  }
+  .history-item.reversed-item img { transform: rotate(180deg); }
+  .history-info { flex: 1; min-width: 0; }
+  .history-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--gold);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+  .history-meta {
+    font-size: 14px;
+    color: var(--text2);
+    letter-spacing: 0.5px;
+  }
+  .history-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--border);
+    flex-shrink: 0;
+  }
+  .empty-state {
+    text-align: center;
+    color: var(--text2);
+    padding: 40px 20px;
+    font-size: 16px;
+    line-height: 2;
+    letter-spacing: 1px;
+  }
+  .empty-state .pixel-icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .spread-drawn-info {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    margin-bottom: 16px;
+  }
+  .spread-card-info {
+    flex: 1;
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    padding: 6px 4px;
+    text-align: center;
+    min-width: 0;
+  }
+  .spread-slot .enlarge-btn {
+    display: none;
+    margin-top: 2px;
+    font-size: 5px;
+    padding: 5px 7px;
+  }
+  .spread-card-info .drawn-name {
+    font-size: 6px;
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .spread-card-info .drawn-meta { font-size: 11px; }
+  .history-item.spread-history-item {
+    align-items: flex-start;
+  }
+  .history-images {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .history-images img {
+    width: 32px;
+    height: auto;
+  }
+  .history-images img.reversed-history-img {
+    transform: rotate(180deg);
+  }
+</style>
+</head>
+<body>
+<div id="sparkle-container"></div>
+<div id="app">
+  <header>
+    <div class="header-title">✦ TAROT ORACLE ✦</div>
+    <div class="header-sub">78 cards of wisdom</div>
+    <div class="pixel-divider"></div>
+  </header>
+
+  <main>
+    <!-- DRAW TAB -->
+    <div class="tab active" id="tab-draw">
+      <div class="section-label">⬡ Deck</div>
+      <div class="options-row" id="deck-opts">
+        <button class="pixel-btn active" data-deck="all">All 78</button>
+        <button class="pixel-btn" data-deck="major">Major (22)</button>
+        <button class="pixel-btn" data-deck="minor">Minor (56)</button>
+      </div>
+
+      <div class="section-label">⬡ Mode</div>
+      <div class="options-row" id="mode-opts">
+        <button class="pixel-btn active" data-mode="single">Single Card</button>
+        <button class="pixel-btn" data-mode="spread">3-Card Spread</button>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-label">Upright/Reversed</div>
+        <div class="pixel-toggle" id="rev-toggle"></div>
+        <div class="toggle-label" id="rev-label" style="color:var(--text2)">OFF</div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-label">Always Reversed</div>
+        <div class="pixel-toggle" id="always-rev-toggle"></div>
+        <div class="toggle-label" id="always-rev-label" style="color:var(--text2)">OFF</div>
+      </div>
+
+      <div class="draw-btn-wrap">
+        <button class="draw-btn" id="draw-btn">✦ DRAW ✦</button>
+      </div>
+
+      <!-- SINGLE CARD AREA -->
+      <div id="single-area">
+        <div class="card-area" id="card-area">
+          <div style="text-align:center;color:var(--text2);font-size:15px;letter-spacing:1px;line-height:2">
+            Press DRAW<br>to reveal your card
+          </div>
+        </div>
+        <div class="drawn-actions" id="drawn-actions">
+          <button class="enlarge-btn" id="drawn-enlarge-btn">⊞ ENLARGE</button>
+        </div>
+        <div class="drawn-info" id="drawn-info">
+          <div class="drawn-name" id="drawn-name"></div>
+          <div class="drawn-meta" id="drawn-meta"></div>
+          <div style="text-align:center" id="drawn-rev-badge"></div>
+        </div>
+      </div>
+
+      <!-- SPREAD AREA -->
+      <div id="spread-area" style="display:none">
+        <div class="spread-area" id="spread-cards"></div>
+        <div class="spread-drawn-info" id="spread-infos" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- INFO TAB -->
+    <div class="tab" id="tab-info">
+      <div class="filter-row" id="filter-row">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="major">Major</button>
+        <button class="filter-btn" data-filter="wands">Wands</button>
+        <button class="filter-btn" data-filter="cups">Cups</button>
+        <button class="filter-btn" data-filter="swords">Swords</button>
+        <button class="filter-btn" data-filter="pentacles">Pentacles</button>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div class="tab" id="tab-history">
+      <div class="history-list" id="history-list">
+        <div class="empty-state">
+          <span class="pixel-icon">🔮</span>
+          No readings yet.<br>Draw your first card!
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="draw">
+      <span class="nav-icon">🃏</span>DRAW
+    </button>
+    <button class="nav-btn" data-tab="info">
+      <span class="nav-icon">📖</span>INFO
+    </button>
+    <button class="nav-btn" data-tab="history">
+      <span class="nav-icon">⏳</span>HISTORY
+    </button>
+  </nav>
+</div>
+
+<!-- CARD DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div class="modal-img-wrap" id="modal-img-wrap">
+      <img id="modal-img" src="" alt="" class="modal-img-large">
+    </div>
+    <div class="modal-action-row">
+      <button class="enlarge-btn" id="modal-enlarge-btn">⊞ ENLARGE</button>
+    </div>
+    <div class="modal-reversed-toggle">
+      <span class="modal-rev-label">REVERSED VIEW</span>
+      <div class="pixel-toggle" id="modal-rev-toggle"></div>
+      <span class="modal-rev-label" id="modal-rev-state" style="color:var(--text2)">OFF</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-section">
+        <div class="modal-section-title">🔑 Keywords</div>
+        <div class="modal-section-text" id="modal-keywords"></div>
+      </div>
+      <div class="modal-section" id="modal-upright-section">
+        <div class="modal-section-title" id="modal-upright-label">☀ Upright Meaning</div>
+        <span class="lang-badge lang-en">EN</span>
+        <div class="modal-section-text" id="modal-upright-en"></div>
+        <span class="lang-badge lang-hi" style="margin-top:4px;display:block">HI</span>
+        <div class="modal-section-text hindi" id="modal-upright-hi"></div>
+      </div>
+      <div class="modal-section" id="modal-reversed-section">
+        <div class="modal-section-title" id="modal-reversed-label">🌙 Reversed Meaning</div>
+        <span class="lang-badge lang-en">EN</span>
+        <div class="modal-section-text" id="modal-reversed-en"></div>
+        <span class="lang-badge lang-hi" style="margin-top:4px;display:block">HI</span>
+        <div class="modal-section-text hindi" id="modal-reversed-hi"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE-ONLY POPUP -->
+<div class="image-modal-overlay" id="image-modal-overlay">
+  <div class="image-modal">
+    <button class="modal-close" id="image-modal-close">✕</button>
+    <div class="image-modal-wrap" id="image-modal-wrap">
+      <img id="image-modal-img" src="" alt="">
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY SPREAD POPUP -->
+<div class="spread-history-overlay" id="spread-history-overlay">
+  <div class="spread-history-modal">
+    <button class="modal-close" id="spread-history-close">âœ•</button>
+    <div class="spread-history-title">3-CARD SPREAD</div>
+    <div class="spread-history-grid" id="spread-history-grid"></div>
+  </div>
+</div>
+
+<script>
+// =====================
+// CARD DATA - All 78 Rider-Waite Cards
+// Local card assets sourced from Wikimedia Commons public-domain scans.
+// =====================
+
+const W = './tarot-oracle_2_assets/cards/';
+const REMOTE_W = 'https://upload.wikimedia.org/wikipedia/commons/';
+const CARD_IMGS = {
+  'The Fool': W+'9/90/RWS_Tarot_00_Fool.jpg',
+  'The Magician': W+'d/de/RWS_Tarot_01_Magician.jpg',
+  'The High Priestess': W+'8/88/RWS_Tarot_02_High_Priestess.jpg',
+  'The Empress': W+'d/d2/RWS_Tarot_03_Empress.jpg',
+  'The Emperor': W+'c/c3/RWS_Tarot_04_Emperor.jpg',
+  'The Hierophant': W+'8/8d/RWS_Tarot_05_Hierophant.jpg',
+  'The Lovers': W+'d/db/RWS_Tarot_06_Lovers.jpg',
+  'The Chariot': W+'9/9b/RWS_Tarot_07_Chariot.jpg',
+  'Strength': W+'f/f5/RWS_Tarot_08_Strength.jpg',
+  'The Hermit': W+'4/4d/RWS_Tarot_09_Hermit.jpg',
+  'Wheel of Fortune': W+'3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg',
+  'Justice': W+'e/e0/RWS_Tarot_11_Justice.jpg',
+  'The Hanged Man': W+'2/2b/RWS_Tarot_12_Hanged_Man.jpg',
+  'Death': W+'d/d7/RWS_Tarot_13_Death.jpg',
+  'Temperance': W+'f/f8/RWS_Tarot_14_Temperance.jpg',
+  'The Devil': W+'5/55/RWS_Tarot_15_Devil.jpg',
+  'The Tower': W+'5/53/RWS_Tarot_16_Tower.jpg',
+  'The Star': W+'d/db/RWS_Tarot_17_Star.jpg',
+  'The Moon': W+'7/7f/RWS_Tarot_18_Moon.jpg',
+  'The Sun': W+'1/17/RWS_Tarot_19_Sun.jpg',
+  'Judgement': W+'d/dd/RWS_Tarot_20_Judgement.jpg',
+  'The World': W+'f/ff/RWS_Tarot_21_World.jpg',
+  'Ace of Wands': W+'1/11/Wands01.jpg',
+  'Two of Wands': W+'0/0f/Wands02.jpg',
+  'Three of Wands': W+'f/ff/Wands03.jpg',
+  'Four of Wands': W+'a/a4/Wands04.jpg',
+  'Five of Wands': W+'9/9d/Wands05.jpg',
+  'Six of Wands': W+'3/3b/Wands06.jpg',
+  'Seven of Wands': W+'e/e4/Wands07.jpg',
+  'Eight of Wands': W+'6/6b/Wands08.jpg',
+  'Nine of Wands': W+'e/e7/Wands09.jpg',
+  'Ten of Wands': W+'0/0b/Wands10.jpg',
+  'Page of Wands': W+'6/6a/Wands11.jpg',
+  'Knight of Wands': W+'1/16/Wands12.jpg',
+  'Queen of Wands': W+'0/0d/Wands13.jpg',
+  'King of Wands': W+'c/ce/Wands14.jpg',
+  'Ace of Cups': W+'3/36/Cups01.jpg',
+  'Two of Cups': W+'f/f8/Cups02.jpg',
+  'Three of Cups': W+'7/7a/Cups03.jpg',
+  'Four of Cups': W+'3/35/Cups04.jpg',
+  'Five of Cups': W+'d/d7/Cups05.jpg',
+  'Six of Cups': W+'1/17/Cups06.jpg',
+  'Seven of Cups': W+'a/ae/Cups07.jpg',
+  'Eight of Cups': W+'6/60/Cups08.jpg',
+  'Nine of Cups': W+'2/24/Cups09.jpg',
+  'Ten of Cups': W+'8/84/Cups10.jpg',
+  'Page of Cups': W+'a/ad/Cups11.jpg',
+  'Knight of Cups': W+'f/fa/Cups12.jpg',
+  'Queen of Cups': W+'6/62/Cups13.jpg',
+  'King of Cups': W+'0/04/Cups14.jpg',
+  'Ace of Swords': W+'1/1a/Swords01.jpg',
+  'Two of Swords': W+'9/9e/Swords02.jpg',
+  'Three of Swords': W+'0/02/Swords03.jpg',
+  'Four of Swords': W+'b/bf/Swords04.jpg',
+  'Five of Swords': W+'2/23/Swords05.jpg',
+  'Six of Swords': W+'2/29/Swords06.jpg',
+  'Seven of Swords': W+'3/34/Swords07.jpg',
+  'Eight of Swords': W+'a/a7/Swords08.jpg',
+  'Nine of Swords': W+'2/2f/Swords09.jpg',
+  'Ten of Swords': W+'d/d4/Swords10.jpg',
+  'Page of Swords': W+'4/4c/Swords11.jpg',
+  'Knight of Swords': W+'b/b0/Swords12.jpg',
+  'Queen of Swords': W+'d/d4/Swords13.jpg',
+  'King of Swords': W+'3/33/Swords14.jpg',
+  'Ace of Pentacles': W+'f/fd/Pents01.jpg',
+  'Two of Pentacles': W+'9/9f/Pents02.jpg',
+  'Three of Pentacles': W+'4/42/Pents03.jpg',
+  'Four of Pentacles': W+'3/35/Pents04.jpg',
+  'Five of Pentacles': W+'9/96/Pents05.jpg',
+  'Six of Pentacles': W+'a/a6/Pents06.jpg',
+  'Seven of Pentacles': W+'6/6a/Pents07.jpg',
+  'Eight of Pentacles': W+'4/49/Pents08.jpg',
+  'Nine of Pentacles': W+'f/f0/Pents09.jpg',
+  'Ten of Pentacles': W+'4/42/Pents10.jpg',
+  'Page of Pentacles': W+'e/ec/Pents11.jpg',
+  'Knight of Pentacles': W+'d/d5/Pents12.jpg',
+  'Queen of Pentacles': W+'8/88/Pents13.jpg',
+  'King of Pentacles': W+'1/1c/Pents14.jpg',
+};
+
+const CARDS = [
+  // MAJOR ARCANA
+  { name: 'The Fool', arcana: 'major', suit: null, num: '0',
+    keywords: 'New beginnings, innocence, spontaneity, free spirit',
+    upright_en: 'New beginnings, optimism, and a leap of faith. The Fool signals the start of a journey full of potential.',
+    upright_hi: 'नई शुरुआत, आशावाद, और विश्वास की छलांग। मूर्ख कार्ड संभावनाओं से भरी यात्रा की शुरुआत का संकेत देता है।',
+    reversed_en: 'Recklessness, risk-taking, or refusing to grow. You may be acting carelessly.',
+    reversed_hi: 'लापरवाही, जोखिम लेना, या बढ़ने से इनकार। आप असावधानी से काम कर सकते हैं।' },
+  { name: 'The Magician', arcana: 'major', suit: null, num: 'I',
+    keywords: 'Willpower, manifestation, skill, resourcefulness',
+    upright_en: 'You have all the tools needed to succeed. Focus your will and manifest your desires into reality.',
+    upright_hi: 'आपके पास सफल होने के लिए सभी साधन हैं। अपनी इच्छाशक्ति को केंद्रित करें और अपनी इच्छाओं को वास्तविकता में बदलें।',
+    reversed_en: 'Manipulation, poor planning, or untapped potential. You may be using your skills unwisely.',
+    reversed_hi: 'हेरफेर, खराब योजना, या अप्रयुक्त क्षमता। आप अपने कौशल का अनुचित उपयोग कर सकते हैं।' },
+  { name: 'The High Priestess', arcana: 'major', suit: null, num: 'II',
+    keywords: 'Intuition, mystery, inner knowledge, the subconscious',
+    upright_en: 'Trust your intuition. Hidden knowledge is available to you — look within rather than outward.',
+    upright_hi: 'अपने अंतर्ज्ञान पर विश्वास करें। आपके लिए छिपा हुआ ज्ञान उपलब्ध है — बाहर की बजाय अंदर देखें।',
+    reversed_en: 'Secrets being hidden, or you are ignoring your inner voice. Reconnect with your intuition.',
+    reversed_hi: 'रहस्य छुपाए जा रहे हैं, या आप अपनी आंतरिक आवाज को नजरअंदाज कर रहे हैं। अपने अंतर्ज्ञान से फिर से जुड़ें।' },
+  { name: 'The Empress', arcana: 'major', suit: null, num: 'III',
+    keywords: 'Fertility, abundance, nature, femininity, nurturing',
+    upright_en: 'Abundance, growth, and creation flow to you. This is a time of fertility and nurturing energy.',
+    upright_hi: 'प्रचुरता, विकास और सृजन आपकी ओर बहता है। यह उर्वरता और पोषण ऊर्जा का समय है।',
+    reversed_en: 'Dependence on others, creative block, or neglecting self-care. Reconnect with nature and yourself.',
+    reversed_hi: 'दूसरों पर निर्भरता, रचनात्मक अवरोध, या आत्म-देखभाल की उपेक्षा। प्रकृति और खुद से फिर से जुड़ें।' },
+  { name: 'The Emperor', arcana: 'major', suit: null, num: 'IV',
+    keywords: 'Authority, structure, control, fatherhood, stability',
+    upright_en: 'Establish order and take charge. The Emperor brings stability through discipline and firm leadership.',
+    upright_hi: 'व्यवस्था स्थापित करें और जिम्मेदारी लें। सम्राट अनुशासन और दृढ़ नेतृत्व के माध्यम से स्थिरता लाता है।',
+    reversed_en: 'Tyranny, rigidity, or loss of control. You may be too domineering or lacking structure.',
+    reversed_hi: 'अत्याचार, कठोरता, या नियंत्रण की हानि। आप बहुत अधिक दबदबाजू या संरचना की कमी वाले हो सकते हैं।' },
+  { name: 'The Hierophant', arcana: 'major', suit: null, num: 'V',
+    keywords: 'Tradition, conformity, morality, ethics, spiritual guidance',
+    upright_en: 'Seek wisdom through tradition and established institutions. A mentor or spiritual guide may appear.',
+    upright_hi: 'परंपरा और स्थापित संस्थाओं के माध्यम से ज्ञान की तलाश करें। एक मार्गदर्शक या आध्यात्मिक गुरु प्रकट हो सकता है।',
+    reversed_en: 'Rebellion, subversiveness, or breaking conventions. You may be questioning established norms.',
+    reversed_hi: 'विद्रोह, विध्वंसकारिता, या परंपराओं को तोड़ना। आप स्थापित मानदंडों पर सवाल उठा सकते हैं।' },
+  { name: 'The Lovers', arcana: 'major', suit: null, num: 'VI',
+    keywords: 'Love, harmony, relationships, alignment, choices',
+    upright_en: 'A deep connection, meaningful choice, or alignment of values. Love in all its forms is highlighted.',
+    upright_hi: 'एक गहरा संबंध, सार्थक विकल्प, या मूल्यों का संरेखण। सभी रूपों में प्रेम को उजागर किया गया है।',
+    reversed_en: 'Disharmony, imbalance, or a poor decision made without reflection. Review your choices.',
+    reversed_hi: 'असामंजस्य, असंतुलन, या बिना विचार किए लिया गया बुरा निर्णय। अपने विकल्पों की समीक्षा करें।' },
+  { name: 'The Chariot', arcana: 'major', suit: null, num: 'VII',
+    keywords: 'Control, willpower, success, determination, action',
+    upright_en: 'Victory through willpower and determination. Take control and push forward with confidence.',
+    upright_hi: 'इच्छाशक्ति और दृढ़ संकल्प के माध्यम से विजय। आत्मविश्वास के साथ नियंत्रण लें और आगे बढ़ें।',
+    reversed_en: 'Lack of control, aggression, or feeling scattered. You may be losing direction.',
+    reversed_hi: 'नियंत्रण की कमी, आक्रामकता, या बिखरा हुआ महसूस करना। आप दिशा खो सकते हैं।' },
+  { name: 'Strength', arcana: 'major', suit: null, num: 'VIII',
+    keywords: 'Courage, persuasion, inner strength, patience, compassion',
+    upright_en: 'Gentle strength overcomes brute force. Your inner courage and compassion will carry you through.',
+    upright_hi: 'कोमल शक्ति बल से जीतती है। आपकी आंतरिक साहस और करुणा आपको आगे ले जाएगी।',
+    reversed_en: 'Self-doubt, weakness, or abuse of power. You may need to reconnect with your inner confidence.',
+    reversed_hi: 'आत्म-संदेह, कमजोरी, या शक्ति का दुरुपयोग। आपको अपने आंतरिक आत्मविश्वास से फिर से जुड़ने की जरूरत हो सकती है।' },
+  { name: 'The Hermit', arcana: 'major', suit: null, num: 'IX',
+    keywords: 'Soul-searching, introspection, solitude, inner guidance',
+    upright_en: 'Withdraw from the noise and look inward. Wisdom comes through solitude and self-reflection.',
+    upright_hi: 'शोर से दूर हटें और अंदर देखें। ज्ञान एकांत और आत्म-चिंतन के माध्यम से आता है।',
+    reversed_en: 'Isolation, loneliness, or withdrawing too much. You may be cutting yourself off unnecessarily.',
+    reversed_hi: 'अलगाव, अकेलापन, या बहुत अधिक पीछे हटना। आप खुद को अनावश्यक रूप से काट सकते हैं।' },
+  { name: 'Wheel of Fortune', arcana: 'major', suit: null, num: 'X',
+    keywords: 'Good luck, karma, life cycles, destiny, turning point',
+    upright_en: 'The wheel turns — a moment of fate and change. Luck and opportunity are in your favor now.',
+    upright_hi: 'पहिया घूमता है — भाग्य और परिवर्तन का एक क्षण। अभी भाग्य और अवसर आपके पक्ष में हैं।',
+    reversed_en: 'Bad luck, resistance to change, or feeling out of control. Cycles are shifting against you.',
+    reversed_hi: 'बुरा भाग्य, परिवर्तन का विरोध, या नियंत्रण से बाहर महसूस करना। चक्र आपके विरुद्ध बदल रहे हैं।' },
+  { name: 'Justice', arcana: 'major', suit: null, num: 'XI',
+    keywords: 'Fairness, truth, cause and effect, law, balance',
+    upright_en: 'Truth and fairness will prevail. Accept responsibility — karma brings what is deserved.',
+    upright_hi: 'सत्य और निष्पक्षता जीतेगी। जिम्मेदारी स्वीकार करें — कर्म वही लाता है जो योग्य है।',
+    reversed_en: 'Injustice, dishonesty, or avoiding accountability. You may be evading the truth.',
+    reversed_hi: 'अन्याय, बेईमानी, या जवाबदेही से बचना। आप सच्चाई से बच सकते हैं।' },
+  { name: 'The Hanged Man', arcana: 'major', suit: null, num: 'XII',
+    keywords: 'Suspension, sacrifice, new perspectives, surrender, waiting',
+    upright_en: 'Pause and see from a new angle. A willing sacrifice now will lead to greater wisdom.',
+    upright_hi: 'रुकें और एक नए कोण से देखें। अभी एक स्वैच्छिक बलिदान अधिक ज्ञान की ओर ले जाएगा।',
+    reversed_en: 'Delays, stalling, or resistance to letting go. You are avoiding a necessary surrender.',
+    reversed_hi: 'विलंब, रुकावट, या छोड़ने का विरोध। आप एक आवश्यक समर्पण से बच रहे हैं।' },
+  { name: 'Death', arcana: 'major', suit: null, num: 'XIII',
+    keywords: 'Endings, change, transformation, transition, letting go',
+    upright_en: 'Not physical death, but transformation. An old chapter closes so something new can be born.',
+    upright_hi: 'शारीरिक मृत्यु नहीं, बल्कि परिवर्तन। एक पुराना अध्याय बंद होता है ताकि कुछ नया जन्म ले सके।',
+    reversed_en: 'Resistance to change, inability to move on, or stagnation. You are holding on too tight.',
+    reversed_hi: 'परिवर्तन का विरोध, आगे बढ़ने में असमर्थता, या ठहराव। आप बहुत कसकर पकड़ रहे हैं।' },
+  { name: 'Temperance', arcana: 'major', suit: null, num: 'XIV',
+    keywords: 'Balance, moderation, patience, purpose, alchemy',
+    upright_en: 'Find balance and practice moderation. Blend opposing forces with patience to create harmony.',
+    upright_hi: 'संतुलन खोजें और संयम का अभ्यास करें। सामंजस्य बनाने के लिए विरोधी ताकतों को धैर्य के साथ मिलाएं।',
+    reversed_en: 'Imbalance, excess, or lack of long-term vision. Slow down and recalibrate.',
+    reversed_hi: 'असंतुलन, अतिरेक, या दीर्घकालिक दृष्टिकोण की कमी। धीमे हों और पुनः अंशांकन करें।' },
+  { name: 'The Devil', arcana: 'major', suit: null, num: 'XV',
+    keywords: 'Shadow self, attachment, addiction, restriction, materialism',
+    upright_en: 'You may be bound by material desires, fears, or unhealthy attachments. The chains are your own.',
+    upright_hi: 'आप भौतिक इच्छाओं, भय, या अस्वस्थ आसक्तियों से बंधे हो सकते हैं। जंजीरें आपकी अपनी हैं।',
+    reversed_en: 'Breaking free, releasing limiting beliefs, or reclaiming power. Liberation is possible.',
+    reversed_hi: 'मुक्त होना, सीमित विश्वासों को छोड़ना, या शक्ति पुनः प्राप्त करना। मुक्ति संभव है।' },
+  { name: 'The Tower', arcana: 'major', suit: null, num: 'XVI',
+    keywords: 'Sudden change, upheaval, chaos, revelation, awakening',
+    upright_en: 'Sudden disruption shatters illusions. Though painful, this upheaval is clearing the way for truth.',
+    upright_hi: 'अचानक व्यवधान भ्रम को तोड़ता है। हालांकि दर्दनाक, यह उथल-पुथल सत्य का रास्ता साफ कर रही है।',
+    reversed_en: 'Disaster averted, or resisting inevitable change. The crisis is coming, be prepared.',
+    reversed_hi: 'आपदा टल गई, या अपरिहार्य परिवर्तन का विरोध। संकट आ रहा है, तैयार रहें।' },
+  { name: 'The Star', arcana: 'major', suit: null, num: 'XVII',
+    keywords: 'Hope, inspiration, serenity, renewal, spirituality',
+    upright_en: 'After darkness, hope shines bright. Have faith in the universe — healing and renewal are coming.',
+    upright_hi: 'अंधेरे के बाद, आशा उज्ज्वल चमकती है। ब्रह्मांड में विश्वास रखें — उपचार और नवीनीकरण आ रहा है।',
+    reversed_en: 'Despair, lack of faith, or feeling disconnected from spirit. Rekindle your hope.',
+    reversed_hi: 'निराशा, आस्था की कमी, या आत्मा से अलग महसूस करना। अपनी आशा को पुनः प्रज्वलित करें।' },
+  { name: 'The Moon', arcana: 'major', suit: null, num: 'XVIII',
+    keywords: 'Illusion, fear, the unconscious, confusion, the unknown',
+    upright_en: 'Not everything is as it appears. Trust your intuition to navigate uncertainty and deep waters.',
+    upright_hi: 'सब कुछ वैसा नहीं है जैसा दिखता है। अनिश्चितता और गहरे पानी को नेविगेट करने के लिए अपने अंतर्ज्ञान पर भरोसा करें।',
+    reversed_en: 'Releasing fears, confusion lifting, or hidden truths coming to light. Clarity is near.',
+    reversed_hi: 'भय को छोड़ना, भ्रम का उठना, या छिपे सत्य का प्रकाश में आना। स्पष्टता करीब है।' },
+  { name: 'The Sun', arcana: 'major', suit: null, num: 'XIX',
+    keywords: 'Positivity, fun, joy, vitality, success',
+    upright_en: 'Joy, success, and radiant energy surround you. The Sun brings clarity, happiness, and vitality.',
+    upright_hi: 'आनंद, सफलता और दीप्तिमान ऊर्जा आपके चारों ओर है। सूर्य स्पष्टता, खुशी और जीवन शक्ति लाता है।',
+    reversed_en: 'Temporary depression, unrealistic optimism, or blocked happiness. The joy will return.',
+    reversed_hi: 'अस्थायी अवसाद, अवास्तविक आशावाद, या अवरुद्ध खुशी। आनंद वापस आएगा।' },
+  { name: 'Judgement', arcana: 'major', suit: null, num: 'XX',
+    keywords: 'Reflection, reckoning, awakening, absolution, inner calling',
+    upright_en: 'A moment of reckoning and awakening. Answer your calling and rise to a higher version of yourself.',
+    upright_hi: 'हिसाब और जागरण का एक क्षण। अपनी पुकार का जवाब दें और खुद के एक उच्च संस्करण तक उठें।',
+    reversed_en: 'Self-doubt, ignoring your calling, or fear of change. You must face your inner truth.',
+    reversed_hi: 'आत्म-संदेह, अपनी पुकार को नजरअंदाज करना, या परिवर्तन का डर। आपको अपने आंतरिक सत्य का सामना करना होगा।' },
+  { name: 'The World', arcana: 'major', suit: null, num: 'XXI',
+    keywords: 'Completion, integration, accomplishment, travel, wholeness',
+    upright_en: 'A cycle completes in triumph. You have achieved wholeness and are ready for the next great journey.',
+    upright_hi: 'एक चक्र विजय में पूरा होता है। आपने पूर्णता प्राप्त की है और अगली महान यात्रा के लिए तैयार हैं।',
+    reversed_en: 'Incompletion, shortcuts, or delayed success. Tie up loose ends before moving forward.',
+    reversed_hi: 'अपूर्णता, शॉर्टकट, या विलंबित सफलता। आगे बढ़ने से पहले ढीले सिरों को बांधें।' },
+
+  // WANDS
+  { name: 'Ace of Wands', arcana: 'minor', suit: 'wands', num: 'Ace',
+    keywords: 'Inspiration, new opportunities, growth, potential, spark',
+    upright_en: 'A spark of inspiration ignites new beginnings. This is the moment to launch your creative vision.',
+    upright_hi: 'प्रेरणा की एक चिंगारी नई शुरुआत को प्रज्वलित करती है। यह आपके रचनात्मक दृष्टिकोण को शुरू करने का क्षण है।',
+    reversed_en: 'Delays, lack of motivation, or a false start. The energy is there, but direction is unclear.',
+    reversed_hi: 'देरी, प्रेरणा की कमी, या गलत शुरुआत। ऊर्जा है, लेकिन दिशा अस्पष्ट है।' },
+  { name: 'Two of Wands', arcana: 'minor', suit: 'wands', num: '2',
+    keywords: 'Future planning, progress, discovery, decisions',
+    upright_en: 'Look ahead and plan your next move. The world is yours to explore — make a bold decision.',
+    upright_hi: 'आगे देखें और अपना अगला कदम योजना बनाएं। दुनिया आपकी खोज के लिए है — एक साहसी निर्णय लें।',
+    reversed_en: 'Fear of the unknown, lack of planning, or playing it too safe. Expand your horizons.',
+    reversed_hi: 'अज्ञात का डर, योजना की कमी, या बहुत सुरक्षित खेलना। अपने क्षितिज का विस्तार करें।' },
+  { name: 'Three of Wands', arcana: 'minor', suit: 'wands', num: '3',
+    keywords: 'Expansion, foresight, overseas opportunities, leadership',
+    upright_en: 'Your plans are bearing fruit. Look to expand beyond your current boundaries.',
+    upright_hi: 'आपकी योजनाएं फल दे रही हैं। अपनी वर्तमान सीमाओं से परे विस्तार करने की कोशिश करें।',
+    reversed_en: 'Obstacles to growth, delays, or lack of foresight. Reconsider your long-term strategy.',
+    reversed_hi: 'विकास में बाधाएं, देरी, या दूरदर्शिता की कमी। अपनी दीर्घकालिक रणनीति पर पुनर्विचार करें।' },
+  { name: 'Four of Wands', arcana: 'minor', suit: 'wands', num: '4',
+    keywords: 'Celebration, harmony, marriage, stability, homecoming',
+    upright_en: 'A time of celebration and joy. Community, milestones, and happy reunions are indicated.',
+    upright_hi: 'उत्सव और आनंद का समय। समुदाय, मील के पत्थर और खुशनुमा पुनर्मिलन का संकेत है।',
+    reversed_en: 'Lack of support, instability at home, or a cancelled celebration.',
+    reversed_hi: 'समर्थन की कमी, घर में अस्थिरता, या रद्द उत्सव।' },
+  { name: 'Five of Wands', arcana: 'minor', suit: 'wands', num: '5',
+    keywords: 'Conflict, competition, tension, diversity, clashes',
+    upright_en: 'Competition and conflict arise. Use this friction as fuel for growth rather than a battle.',
+    upright_hi: 'प्रतिस्पर्धा और संघर्ष उठता है। इस घर्षण का उपयोग युद्ध के बजाय विकास के ईंधन के रूप में करें।',
+    reversed_en: 'Avoiding conflict, end of struggles, or suppressed aggression. Find peaceful resolution.',
+    reversed_hi: 'संघर्ष से बचना, संघर्षों का अंत, या दबी आक्रामकता। शांतिपूर्ण समाधान खोजें।' },
+  { name: 'Six of Wands', arcana: 'minor', suit: 'wands', num: '6',
+    keywords: 'Victory, success, public reward, pride, recognition',
+    upright_en: 'Victory is yours. Public recognition and achievement come your way — enjoy your moment of triumph.',
+    upright_hi: 'जीत आपकी है। सार्वजनिक मान्यता और उपलब्धि आपके रास्ते आती है — अपनी विजय के क्षण का आनंद लें।',
+    reversed_en: 'Fall from grace, egotism, or lack of confidence. Guard against arrogance.',
+    reversed_hi: 'पतन, अहंकारवाद, या आत्मविश्वास की कमी। अहंकार से बचें।' },
+  { name: 'Seven of Wands', arcana: 'minor', suit: 'wands', num: '7',
+    keywords: 'Challenge, competition, perseverance, defensiveness',
+    upright_en: 'Hold your ground. You are in a position of advantage — stand firm and defend your position.',
+    upright_hi: 'अपनी जमीन पकड़ें। आप लाभ की स्थिति में हैं — दृढ़ रहें और अपनी स्थिति का बचाव करें।',
+    reversed_en: 'Giving up, overwhelmed, or caving to pressure. Reassess whether the fight is worth it.',
+    reversed_hi: 'हार मान लेना, अभिभूत होना, या दबाव के आगे झुकना। पुनर्मूल्यांकन करें कि लड़ाई इसके लायक है या नहीं।' },
+  { name: 'Eight of Wands', arcana: 'minor', suit: 'wands', num: '8',
+    keywords: 'Speed, action, air travel, movement, swift change',
+    upright_en: 'Things move fast now. Rapid progress, swift communication, and momentum are at a peak.',
+    upright_hi: 'चीजें अब तेजी से आगे बढ़ती हैं। तीव्र प्रगति, त्वरित संचार और गति चरम पर है।',
+    reversed_en: 'Delays, frustration, or scattered energy. Slow down and regain focus.',
+    reversed_hi: 'देरी, निराशा, या बिखरी हुई ऊर्जा। धीमे हों और फोकस दोबारा प्राप्त करें।' },
+  { name: 'Nine of Wands', arcana: 'minor', suit: 'wands', num: '9',
+    keywords: 'Resilience, courage, persistence, test of faith, boundaries',
+    upright_en: 'Almost there — one final push. Despite weariness, resilience will carry you to victory.',
+    upright_hi: 'लगभग वहाँ — एक अंतिम धक्का। थकान के बावजूद, लचीलापन आपको जीत तक ले जाएगा।',
+    reversed_en: 'Exhaustion, giving up, or being too defensive. Rest and then rally.',
+    reversed_hi: 'थकावट, हार मानना, या बहुत रक्षात्मक होना। आराम करें और फिर संगठित हों।' },
+  { name: 'Ten of Wands', arcana: 'minor', suit: 'wands', num: '10',
+    keywords: 'Burden, extra responsibility, hard work, completion, stress',
+    upright_en: 'You are carrying too much. Delegate or release some burdens — not everything needs to be your weight.',
+    upright_hi: 'आप बहुत अधिक ले जा रहे हैं। कुछ बोझ सौंपें या छोड़ें — हर चीज आपका वजन नहीं होनी चाहिए।',
+    reversed_en: 'Letting go, lightening the load, or inability to delegate. Relief is possible.',
+    reversed_hi: 'छोड़ना, बोझ हल्का करना, या सौंपने में असमर्थता। राहत संभव है।' },
+  { name: 'Page of Wands', arcana: 'minor', suit: 'wands', num: 'Page',
+    keywords: 'Exploration, enthusiasm, discovery, free spirit, new ideas',
+    upright_en: 'A free spirit full of enthusiasm. New ideas spark and adventures await — embrace them boldly.',
+    upright_hi: 'उत्साह से भरी एक स्वतंत्र आत्मा। नए विचार चमकते हैं और रोमांच इंतजार करते हैं — उन्हें साहसपूर्वक अपनाएं।',
+    reversed_en: 'Haste, immaturity, or lack of direction. Channel your energy more productively.',
+    reversed_hi: 'जल्दबाजी, अपरिपक्वता, या दिशा की कमी। अपनी ऊर्जा को अधिक उत्पादक रूप से चैनल करें।' },
+  { name: 'Knight of Wands', arcana: 'minor', suit: 'wands', num: 'Knight',
+    keywords: 'Energy, passion, adventure, impulsiveness, confidence',
+    upright_en: 'Charge forward with passion and energy. Adventure calls — act boldly and with confidence.',
+    upright_hi: 'जुनून और ऊर्जा के साथ आगे बढ़ें। साहस बुलाता है — साहसपूर्वक और आत्मविश्वास के साथ कार्य करें।',
+    reversed_en: 'Recklessness, impatience, or volatile behavior. Channel that fiery energy more wisely.',
+    reversed_hi: 'लापरवाही, अधीरता, या अस्थिर व्यवहार। उस उग्र ऊर्जा को अधिक समझदारी से चैनल करें।' },
+  { name: 'Queen of Wands', arcana: 'minor', suit: 'wands', num: 'Queen',
+    keywords: 'Courage, confidence, independence, determination, optimism',
+    upright_en: 'A bold, charismatic presence. Lead with confidence and inspire others through your passion.',
+    upright_hi: 'एक साहसी, आकर्षक उपस्थिति। आत्मविश्वास के साथ नेतृत्व करें और अपने जुनून के माध्यम से दूसरों को प्रेरित करें।',
+    reversed_en: 'Demanding, jealousy, or self-doubt. Reconnect with your inner fire and power.',
+    reversed_hi: 'मांग करना, ईर्ष्या, या आत्म-संदेह। अपनी आंतरिक आग और शक्ति से फिर से जुड़ें।' },
+  { name: 'King of Wands', arcana: 'minor', suit: 'wands', num: 'King',
+    keywords: 'Natural-born leader, vision, entrepreneur, honour',
+    upright_en: 'Lead with bold vision. Your natural charisma and enterprise inspire all around you.',
+    upright_hi: 'साहसी दृष्टिकोण के साथ नेतृत्व करें। आपकी स्वाभाविक करिश्मा और उद्यम आपके आसपास सभी को प्रेरित करती है।',
+    reversed_en: 'Impulsiveness, ruthlessness, or high expectations. Temper boldness with wisdom.',
+    reversed_hi: 'आवेगशीलता, निर्दयता, या उच्च अपेक्षाएं। साहस को बुद्धि के साथ संयमित करें।' },
+
+  // CUPS
+  { name: 'Ace of Cups', arcana: 'minor', suit: 'cups', num: 'Ace',
+    keywords: 'New love, compassion, creativity, overwhelming emotion',
+    upright_en: 'An outpouring of love and emotion. New relationships, creativity, and spiritual gifts overflow.',
+    upright_hi: 'प्रेम और भावना का उफान। नए रिश्ते, रचनात्मकता और आध्यात्मिक उपहार उफन रहे हैं।',
+    reversed_en: 'Emotional loss, blocked creativity, or repressed feelings. Open your heart again.',
+    reversed_hi: 'भावनात्मक हानि, अवरुद्ध रचनात्मकता, या दबी भावनाएं। अपना दिल फिर से खोलें।' },
+  { name: 'Two of Cups', arcana: 'minor', suit: 'cups', num: '2',
+    keywords: 'Unified love, partnership, mutual attraction, connection',
+    upright_en: 'A beautiful union of energies. Deep partnership, romance, or a powerful mutual connection is forming.',
+    upright_hi: 'ऊर्जाओं का एक सुंदर मिलन। गहरी साझेदारी, रोमांस, या एक शक्तिशाली पारस्परिक संबंध बन रहा है।',
+    reversed_en: 'Broken communication, imbalance in a relationship, or separation.',
+    reversed_hi: 'टूटा हुआ संचार, रिश्ते में असंतुलन, या अलगाव।' },
+  { name: 'Three of Cups', arcana: 'minor', suit: 'cups', num: '3',
+    keywords: 'Celebration, friendship, creativity, collaborations',
+    upright_en: 'Celebrate with your tribe! Joy, friendship, and community flourish in this happy gathering.',
+    upright_hi: 'अपने समूह के साथ जश्न मनाएं! इस खुशनुमा सभा में आनंद, मित्रता और समुदाय फलता-फूलता है।',
+    reversed_en: 'Overindulgence, gossip, or isolation from friends. Be mindful of social dynamics.',
+    reversed_hi: 'अत्यधिक भोग, गपशप, या दोस्तों से अलगाव। सामाजिक गतिशीलता के प्रति सावधान रहें।' },
+  { name: 'Four of Cups', arcana: 'minor', suit: 'cups', num: '4',
+    keywords: 'Meditation, contemplation, apathy, reevaluation',
+    upright_en: 'You may be too focused inward to see an offering before you. Look up — an opportunity awaits.',
+    upright_hi: 'आप अपने सामने एक प्रस्ताव देखने के लिए बहुत अधिक अंदर केंद्रित हो सकते हैं। ऊपर देखें — एक अवसर इंतजार कर रहा है।',
+    reversed_en: 'Motivation returns, or snapping out of apathy. Seize the new opportunity before you.',
+    reversed_hi: 'प्रेरणा वापस आती है, या उदासीनता से बाहर निकलना। अपने सामने नए अवसर को लपकें।' },
+  { name: 'Five of Cups', arcana: 'minor', suit: 'cups', num: '5',
+    keywords: 'Regret, failure, disappointment, pessimism, grief',
+    upright_en: 'Grief and loss cloud your view. But two cups still stand — shift focus to what remains.',
+    upright_hi: 'दुख और हानि आपके दृश्य को धुंधला करती है। लेकिन दो कप अभी भी खड़े हैं — ध्यान उस पर स्थानांतरित करें जो बचा है।',
+    reversed_en: 'Moving on, acceptance, or releasing regret. Healing has begun.',
+    reversed_hi: 'आगे बढ़ना, स्वीकृति, या पछतावे को छोड़ना। उपचार शुरू हो गया है।' },
+  { name: 'Six of Cups', arcana: 'minor', suit: 'cups', num: '6',
+    keywords: 'Nostalgia, childhood memories, innocence, joy, familiarity',
+    upright_en: 'Sweet memories and nostalgia bring warmth. A reunion, childhood joy, or innocent pleasure awaits.',
+    upright_hi: 'मीठी यादें और पुरानी यादें गर्माहट लाती हैं। एक पुनर्मिलन, बचपन का आनंद, या निर्दोष आनंद प्रतीक्षा करता है।',
+    reversed_en: 'Living in the past, or naïve nostalgia. Let go of what was and embrace now.',
+    reversed_hi: 'अतीत में जीना, या भोली पुरानी यादें। जो था उसे छोड़ें और अभी को अपनाएं।' },
+  { name: 'Seven of Cups', arcana: 'minor', suit: 'cups', num: '7',
+    keywords: 'Fantasy, illusion, wishful thinking, choices, imagination',
+    upright_en: 'Too many options cloud your judgment. Ground your dreams in reality and make a clear choice.',
+    upright_hi: 'बहुत अधिक विकल्प आपके निर्णय को धुंधला करते हैं। अपने सपनों को वास्तविकता में आधारित करें और एक स्पष्ट विकल्प बनाएं।',
+    reversed_en: 'Clarity after confusion, or facing reality. Illusions are falling away.',
+    reversed_hi: 'भ्रम के बाद स्पष्टता, या वास्तविकता का सामना। भ्रम दूर हो रहे हैं।' },
+  { name: 'Eight of Cups', arcana: 'minor', suit: 'cups', num: '8',
+    keywords: 'Withdrawal, escapism, disappointment, abandonment, searching',
+    upright_en: 'Walking away from what no longer fulfills you. The search for deeper meaning begins.',
+    upright_hi: 'उससे दूर चलना जो अब आपको पूर्ण नहीं करता। गहरे अर्थ की खोज शुरू होती है।',
+    reversed_en: 'Fear of moving on, or returning to a bad situation. Trust your instinct to leave.',
+    reversed_hi: 'आगे बढ़ने का डर, या खराब स्थिति में वापस जाना। छोड़ने की अपनी प्रवृत्ति पर भरोसा करें।' },
+  { name: 'Nine of Cups', arcana: 'minor', suit: 'cups', num: '9',
+    keywords: 'Contentment, satisfaction, gratitude, wish fulfilled',
+    upright_en: 'The wish card — your desires manifest. Contentment, pleasure, and emotional fulfillment abound.',
+    upright_hi: 'इच्छा कार्ड — आपकी इच्छाएं प्रकट होती हैं। संतोष, आनंद और भावनात्मक पूर्ति भरपूर है।',
+    reversed_en: 'Dissatisfaction, greed, or overindulgence. True happiness requires more than just things.',
+    reversed_hi: 'असंतुष्टि, लालच, या अत्यधिक भोग। सच्ची खुशी के लिए केवल चीजों से अधिक की आवश्यकता है।' },
+  { name: 'Ten of Cups', arcana: 'minor', suit: 'cups', num: '10',
+    keywords: 'Harmony, marriage, happiness, alignment, long-term joy',
+    upright_en: 'Divine love and lasting happiness. A dream of family harmony, love, and deep fulfillment comes true.',
+    upright_hi: 'दिव्य प्रेम और स्थायी खुशी। पारिवारिक सामंजस्य, प्रेम और गहरी पूर्ति का सपना सच होता है।',
+    reversed_en: 'Broken home, misalignment of values, or unhappy family dynamics.',
+    reversed_hi: 'टूटा घर, मूल्यों का गलत संरेखण, या अखुश परिवार की गतिशीलता।' },
+  { name: 'Page of Cups', arcana: 'minor', suit: 'cups', num: 'Page',
+    keywords: 'Creative opportunities, curiosity, romance, idealism',
+    upright_en: 'An imaginative, sensitive soul. Creative and emotional messages or opportunities are on their way.',
+    upright_hi: 'एक कल्पनाशील, संवेदनशील आत्मा। रचनात्मक और भावनात्मक संदेश या अवसर रास्ते में हैं।',
+    reversed_en: 'Immaturity, emotional volatility, or creative blocks. Develop your emotional intelligence.',
+    reversed_hi: 'अपरिपक्वता, भावनात्मक अस्थिरता, या रचनात्मक अवरोध। अपनी भावनात्मक बुद्धिमत्ता विकसित करें।' },
+  { name: 'Knight of Cups', arcana: 'minor', suit: 'cups', num: 'Knight',
+    keywords: 'Romance, charm, following the heart, creativity',
+    upright_en: 'A romantic, idealistic knight arrives. Follow your heart and pursue what stirs your soul.',
+    upright_hi: 'एक रोमांटिक, आदर्शवादी शूरवीर आता है। अपने दिल का अनुसरण करें और उसका पीछा करें जो आपकी आत्मा को हिलाता है।',
+    reversed_en: 'Moodiness, jealousy, or an unrealistic dreamer. Ground your emotions in practicality.',
+    reversed_hi: 'मनमौजीपन, ईर्ष्या, या एक अवास्तविक सपने देखने वाला। अपनी भावनाओं को व्यावहारिकता में आधारित करें।' },
+  { name: 'Queen of Cups', arcana: 'minor', suit: 'cups', num: 'Queen',
+    keywords: 'Compassionate, caring, emotionally stable, intuitive, in flow',
+    upright_en: 'Deep empathy and emotional wisdom. Lead with your heart and nurture others with compassion.',
+    upright_hi: 'गहरी सहानुभूति और भावनात्मक बुद्धिमत्ता। अपने दिल के साथ नेतृत्व करें और करुणा के साथ दूसरों का पोषण करें।',
+    reversed_en: 'Emotional insecurity, co-dependency, or manipulative behavior. Guard your empathy.',
+    reversed_hi: 'भावनात्मक असुरक्षा, सह-निर्भरता, या जोड़-तोड़ भरा व्यवहार। अपनी सहानुभूति की रक्षा करें।' },
+  { name: 'King of Cups', arcana: 'minor', suit: 'cups', num: 'King',
+    keywords: 'Emotionally balanced, compassionate, diplomatic, wise',
+    upright_en: 'A master of emotional balance. Lead with wisdom, calm authority, and deep compassion.',
+    upright_hi: 'भावनात्मक संतुलन का एक मास्टर। बुद्धि, शांत अधिकार और गहरी करुणा के साथ नेतृत्व करें।',
+    reversed_en: 'Emotional manipulation, moodiness, or coldness. Reconnect with your emotional wisdom.',
+    reversed_hi: 'भावनात्मक हेरफेर, मनमौजीपन, या ठंडापन। अपनी भावनात्मक बुद्धिमत्ता से फिर से जुड़ें।' },
+
+  // SWORDS
+  { name: 'Ace of Swords', arcana: 'minor', suit: 'swords', num: 'Ace',
+    keywords: 'Breakthroughs, clarity, sharp mind, truth, new ideas',
+    upright_en: 'Mental clarity cuts through confusion. A breakthrough idea, truth, or new direction emerges.',
+    upright_hi: 'मानसिक स्पष्टता भ्रम को काटती है। एक सफलता विचार, सत्य, या नई दिशा उभरती है।',
+    reversed_en: 'Confusion, brutality with words, or using intellect harmfully. Seek clarity before acting.',
+    reversed_hi: 'भ्रम, शब्दों से क्रूरता, या बुद्धि का हानिकारक उपयोग। कार्य करने से पहले स्पष्टता की तलाश करें।' },
+  { name: 'Two of Swords', arcana: 'minor', suit: 'swords', num: '2',
+    keywords: 'Difficult decisions, indecision, blocked emotions, stalemate',
+    upright_en: 'A difficult choice must be made. You cannot remain in the middle forever — gather information and decide.',
+    upright_hi: 'एक कठिन विकल्प बनाना होगा। आप हमेशा के लिए बीच में नहीं रह सकते — जानकारी इकट्ठा करें और निर्णय लें।',
+    reversed_en: 'Information overload, or a decision made out of fear. Trust your gut.',
+    reversed_hi: 'जानकारी का अधिभार, या डर से लिया गया निर्णय। अपनी प्रवृत्ति पर भरोसा करें।' },
+  { name: 'Three of Swords', arcana: 'minor', suit: 'swords', num: '3',
+    keywords: 'Heartbreak, sorrow, grief, hurt, sadness',
+    upright_en: 'Pain and heartbreak, but healing follows. Acknowledge the wound so recovery can begin.',
+    upright_hi: 'दर्द और दिल टूटना, लेकिन उपचार इसके बाद आता है। घाव को स्वीकार करें ताकि ठीक होना शुरू हो सके।',
+    reversed_en: 'Healing, forgiveness, or release of grief. The worst has passed.',
+    reversed_hi: 'उपचार, क्षमा, या दुख से मुक्ति। सबसे बुरा बीत गया है।' },
+  { name: 'Four of Swords', arcana: 'minor', suit: 'swords', num: '4',
+    keywords: 'Rest, restoration, contemplation, recovery, passivity',
+    upright_en: 'You need rest and recuperation. Step back, restore your energy, and return stronger.',
+    upright_hi: 'आपको आराम और स्वास्थ्य लाभ की जरूरत है। पीछे हटें, अपनी ऊर्जा बहाल करें, और मजबूत होकर वापस आएं।',
+    reversed_en: 'Restlessness, burnout, or inability to relax. Forced rest may be necessary.',
+    reversed_hi: 'बेचैनी, थकान, या आराम करने में असमर्थता। जबरन आराम आवश्यक हो सकता है।' },
+  { name: 'Five of Swords', arcana: 'minor', suit: 'swords', num: '5',
+    keywords: 'Conflict, tension, loss, defeat, win at all costs',
+    upright_en: 'A hollow victory — winning at the cost of others. Reflect on whether this battle was worth fighting.',
+    upright_hi: 'एक खोखली जीत — दूसरों की कीमत पर जीतना। विचार करें कि क्या यह लड़ाई लड़ने लायक थी।',
+    reversed_en: 'Reconciliation, moving past conflict, or accepting defeat gracefully.',
+    reversed_hi: 'सुलह, संघर्ष से आगे बढ़ना, या सम्मान के साथ हार स्वीकार करना।' },
+  { name: 'Six of Swords', arcana: 'minor', suit: 'swords', num: '6',
+    keywords: 'Transition, change, rite of passage, releasing baggage',
+    upright_en: 'Moving from turbulence toward calmer waters. A difficult transition is leading somewhere better.',
+    upright_hi: 'उथल-पुथल से शांत पानी की ओर बढ़ना। एक कठिन संक्रमण कहीं बेहतर की ओर ले जा रहा है।',
+    reversed_en: 'Resistance to change, unfinished business, or returning to old problems.',
+    reversed_hi: 'परिवर्तन का विरोध, अधूरा काम, या पुरानी समस्याओं पर वापस जाना।' },
+  { name: 'Seven of Swords', arcana: 'minor', suit: 'swords', num: '7',
+    keywords: 'Betrayal, deception, getting away with it, stealth',
+    upright_en: 'Beware of deception — yours or another\'s. A clever strategy may have a dishonest element.',
+    upright_hi: 'धोखे से सावधान रहें — आपका या किसी और का। एक चतुर रणनीति में बेईमान तत्व हो सकता है।',
+    reversed_en: 'Coming clean, being caught, or dropping deceptive tactics. Honesty is the only way forward.',
+    reversed_hi: 'साफ बोलना, पकड़ा जाना, या धोखेबाज रणनीति को छोड़ना। ईमानदारी आगे बढ़ने का एकमात्र तरीका है।' },
+  { name: 'Eight of Swords', arcana: 'minor', suit: 'swords', num: '8',
+    keywords: 'Isolation, confusion, imprisonment, restriction, victim mentality',
+    upright_en: 'You feel trapped, but the prison is partly your own mind. The way out exists — look beyond fear.',
+    upright_hi: 'आप फंसा हुआ महसूस करते हैं, लेकिन जेल आंशिक रूप से आपका अपना दिमाग है। बाहर का रास्ता मौजूद है — भय से परे देखें।',
+    reversed_en: 'Freedom, self-acceptance, or releasing limiting beliefs. You are freer than you think.',
+    reversed_hi: 'स्वतंत्रता, आत्म-स्वीकृति, या सीमित विश्वासों को छोड़ना। आप जितना सोचते हैं उससे अधिक स्वतंत्र हैं।' },
+  { name: 'Nine of Swords', arcana: 'minor', suit: 'swords', num: '9',
+    keywords: 'Anxiety, worry, fear, depression, nightmares',
+    upright_en: 'Anxiety and dark thoughts spiral at night. Face your fears with compassion — things are rarely as bad as they seem.',
+    upright_hi: 'रात में चिंता और अंधेरे विचार घूमते हैं। अपने डर का करुणा के साथ सामना करें — चीजें शायद ही कभी उतनी बुरी होती हैं जितनी लगती हैं।',
+    reversed_en: 'Hope emerging, or releasing anxiety. Seek help if the mental burden feels too heavy.',
+    reversed_hi: 'आशा उभर रही है, या चिंता छोड़ना। यदि मानसिक बोझ बहुत भारी लगे तो मदद लें।' },
+  { name: 'Ten of Swords', arcana: 'minor', suit: 'swords', num: '10',
+    keywords: 'Painful endings, deep wounds, betrayal, loss, crisis',
+    upright_en: 'A painful ending — but the darkest hour is before dawn. This rock bottom is also a turning point.',
+    upright_hi: 'एक दर्दनाक अंत — लेकिन सबसे अंधेरा समय भोर से पहले होता है। यह सबसे निचला बिंदु एक मोड़ भी है।',
+    reversed_en: 'Recovery, regeneration, or resisting the inevitable end. The worst is truly over.',
+    reversed_hi: 'स्वास्थ्य लाभ, पुनर्जन्म, या अपरिहार्य अंत का विरोध। सबसे बुरा वास्तव में खत्म हो गया है।' },
+  { name: 'Page of Swords', arcana: 'minor', suit: 'swords', num: 'Page',
+    keywords: 'New ideas, curiosity, thirst for knowledge, new ways of communicating',
+    upright_en: 'Alert and curious, gathering information. New ideas and mental energy spark fresh approaches.',
+    upright_hi: 'सतर्क और जिज्ञासु, जानकारी इकट्ठा करना। नए विचार और मानसिक ऊर्जा ताजा दृष्टिकोण को चिंगारी देती है।',
+    reversed_en: 'Deceptive communication, or all talk no action. Be careful with your words.',
+    reversed_hi: 'भ्रामक संचार, या केवल बातें करना कोई काम नहीं। अपने शब्दों से सावधान रहें।' },
+  { name: 'Knight of Swords', arcana: 'minor', suit: 'swords', num: 'Knight',
+    keywords: 'Ambitious, action-oriented, driven to succeed, fast-thinking',
+    upright_en: 'Charge forward with sharp focus. Be bold and decisive, but avoid recklessness.',
+    upright_hi: 'तीक्ष्ण ध्यान के साथ आगे बढ़ें। साहसी और निर्णायक रहें, लेकिन लापरवाही से बचें।',
+    reversed_en: 'Arrogance, recklessness, or acting without thinking. Slow down before striking.',
+    reversed_hi: 'अहंकार, लापरवाही, या बिना सोचे-समझे काम करना। हमला करने से पहले धीमे हों।' },
+  { name: 'Queen of Swords', arcana: 'minor', suit: 'swords', num: 'Queen',
+    keywords: 'Independent, unbiased judgment, clear boundaries, direct communication',
+    upright_en: 'Sharp intellect and clear boundaries define this energy. Speak your truth with grace and precision.',
+    upright_hi: 'तेज बुद्धि और स्पष्ट सीमाएं इस ऊर्जा को परिभाषित करती हैं। कृपा और सटीकता के साथ अपना सत्य बोलें।',
+    reversed_en: 'Cold-heartedness, bitterness, or cruelty. Soften your edges with compassion.',
+    reversed_hi: 'ठंडे दिल, कड़वाहट, या क्रूरता। करुणा के साथ अपनी तीखी धार को नरम करें।' },
+  { name: 'King of Swords', arcana: 'minor', suit: 'swords', num: 'King',
+    keywords: 'Mental clarity, intellectual power, authority, truth, ethics',
+    upright_en: 'Lead with intellect and truth. Make fair, authoritative decisions based on clear reasoning.',
+    upright_hi: 'बुद्धि और सत्य के साथ नेतृत्व करें। स्पष्ट तर्क के आधार पर निष्पक्ष, आधिकारिक निर्णय लें।',
+    reversed_en: 'Tyranny, manipulation, or misuse of power. Use your mental gifts responsibly.',
+    reversed_hi: 'अत्याचार, हेरफेर, या शक्ति का दुरुपयोग। अपने मानसिक उपहारों का जिम्मेदारी से उपयोग करें।' },
+
+  // PENTACLES
+  { name: 'Ace of Pentacles', arcana: 'minor', suit: 'pentacles', num: 'Ace',
+    keywords: 'New financial opportunity, abundance, prosperity, manifestation',
+    upright_en: 'A seed of material opportunity is planted. New financial or practical beginnings bloom here.',
+    upright_hi: 'भौतिक अवसर का एक बीज बोया गया है। नई वित्तीय या व्यावहारिक शुरुआत यहाँ खिलती है।',
+    reversed_en: 'Lost opportunity, poor financial planning, or greed. Reconsider your material choices.',
+    reversed_hi: 'खोया हुआ अवसर, खराब वित्तीय योजना, या लालच। अपने भौतिक विकल्पों पर पुनर्विचार करें।' },
+  { name: 'Two of Pentacles', arcana: 'minor', suit: 'pentacles', num: '2',
+    keywords: 'Multiple priorities, time management, balance, adaptability',
+    upright_en: 'Keep all the balls in the air with grace. Juggle your priorities with flexibility and humor.',
+    upright_hi: 'कृपा के साथ सभी गेंदों को हवा में रखें। लचीलेपन और हास्य के साथ अपनी प्राथमिकताओं को संतुलित करें।',
+    reversed_en: 'Disorganized, overwhelmed, or financial imbalance. Prioritize what truly matters.',
+    reversed_hi: 'अव्यवस्थित, अभिभूत, या वित्तीय असंतुलन। उस पर ध्यान दें जो वास्तव में मायने रखता है।' },
+  { name: 'Three of Pentacles', arcana: 'minor', suit: 'pentacles', num: '3',
+    keywords: 'Teamwork, collaboration, learning, implementation',
+    upright_en: 'Great work is created through collaboration. Value each team member\'s skills and build together.',
+    upright_hi: 'महान काम सहयोग के माध्यम से बनाया जाता है। प्रत्येक टीम सदस्य के कौशल को महत्व दें और एक साथ बनाएं।',
+    reversed_en: 'Disharmony in work, lack of teamwork, or poor results. Address the communication breakdown.',
+    reversed_hi: 'काम में असामंजस्य, टीम वर्क की कमी, या खराब परिणाम। संचार की खराबी को दूर करें।' },
+  { name: 'Four of Pentacles', arcana: 'minor', suit: 'pentacles', num: '4',
+    keywords: 'Control, stability, security, conservatism, hoarding',
+    upright_en: 'Holding on tightly to resources. While stability is wise, fear of loss creates stagnation.',
+    upright_hi: 'संसाधनों को कसकर पकड़ना। जबकि स्थिरता बुद्धिमान है, हानि का डर ठहराव पैदा करता है।',
+    reversed_en: 'Releasing control, generosity, or financial instability. Find balance between saving and spending.',
+    reversed_hi: 'नियंत्रण छोड़ना, उदारता, या वित्तीय अस्थिरता। बचत और खर्च के बीच संतुलन खोजें।' },
+  { name: 'Five of Pentacles', arcana: 'minor', suit: 'pentacles', num: '5',
+    keywords: 'Financial loss, poverty, lack, insecurity, worry',
+    upright_en: 'Hard times and scarcity. But even in struggle, help is available — look for the light in the dark.',
+    upright_hi: 'कठिन समय और कमी। लेकिन संघर्ष में भी, मदद उपलब्ध है — अंधेरे में रोशनी देखें।',
+    reversed_en: 'Recovery from hardship, or spiritual poverty despite material wealth.',
+    reversed_hi: 'कठिनाई से उबरना, या भौतिक धन के बावजूद आध्यात्मिक गरीबी।' },
+  { name: 'Six of Pentacles', arcana: 'minor', suit: 'pentacles', num: '6',
+    keywords: 'Giving, receiving, sharing wealth, charity, generosity',
+    upright_en: 'Generosity and balance in giving and receiving. Share your abundance or accept help graciously.',
+    upright_hi: 'देने और लेने में उदारता और संतुलन। अपनी प्रचुरता साझा करें या सम्मान के साथ मदद स्वीकार करें।',
+    reversed_en: 'Selfishness, strings-attached giving, or dependency. Examine your motives in exchange.',
+    reversed_hi: 'स्वार्थपरता, शर्तों के साथ देना, या निर्भरता। विनिमय में अपने उद्देश्यों की जांच करें।' },
+  { name: 'Seven of Pentacles', arcana: 'minor', suit: 'pentacles', num: '7',
+    keywords: 'Long-term view, sustainable results, perseverance, investment',
+    upright_en: 'Take stock of your progress. Your efforts are bearing fruit — patient tending leads to harvest.',
+    upright_hi: 'अपनी प्रगति का मूल्यांकन करें। आपके प्रयास फल दे रहे हैं — धैर्यपूर्ण देखभाल फसल की ओर ले जाती है।',
+    reversed_en: 'Impatience, lack of reward, or poor long-term investment. Reconsider your strategy.',
+    reversed_hi: 'अधीरता, पुरस्कार की कमी, या खराब दीर्घकालिक निवेश। अपनी रणनीति पर पुनर्विचार करें।' },
+  { name: 'Eight of Pentacles', arcana: 'minor', suit: 'pentacles', num: '8',
+    keywords: 'Apprenticeship, repetitive tasks, skill development, diligence',
+    upright_en: 'Dedicated craftsmanship. Put in the work, practice diligently, and master your skill.',
+    upright_hi: 'समर्पित शिल्प कौशल। काम में लगें, परिश्रमपूर्वक अभ्यास करें, और अपने कौशल में माहिर बनें।',
+    reversed_en: 'Lack of focus, mediocrity, or perfectionism. Find the balance between effort and excellence.',
+    reversed_hi: 'ध्यान की कमी, साधारणता, या पूर्णतावाद। प्रयास और उत्कृष्टता के बीच संतुलन खोजें।' },
+  { name: 'Nine of Pentacles', arcana: 'minor', suit: 'pentacles', num: '9',
+    keywords: 'Abundance, luxury, self-sufficiency, financial independence',
+    upright_en: 'You have built something beautiful. Enjoy the fruits of your labor — financial comfort and self-reliance.',
+    upright_hi: 'आपने कुछ सुंदर बनाया है। अपने श्रम के फल का आनंद लें — वित्तीय आराम और आत्मनिर्भरता।',
+    reversed_en: 'Working too hard, financial setbacks, or living beyond your means.',
+    reversed_hi: 'बहुत कठिन काम करना, वित्तीय झटके, या अपनी क्षमता से परे जीना।' },
+  { name: 'Ten of Pentacles', arcana: 'minor', suit: 'pentacles', num: '10',
+    keywords: 'Wealth, financial security, family, long-term success, legacy',
+    upright_en: 'Lasting wealth and family legacy. The foundation you build now will provide for generations.',
+    upright_hi: 'स्थायी धन और पारिवारिक विरासत। आप जो नींव अभी बनाते हैं वह पीढ़ियों के लिए प्रदान करेगी।',
+    reversed_en: 'The dark side of wealth, family conflict, or financial failure.',
+    reversed_hi: 'धन का अंधेरा पक्ष, पारिवारिक संघर्ष, या वित्तीय विफलता।' },
+  { name: 'Page of Pentacles', arcana: 'minor', suit: 'pentacles', num: 'Page',
+    keywords: 'Manifestation, financial opportunity, skill development, studious',
+    upright_en: 'An eager student, grounded and practical. Study hard and build your skills for the material world.',
+    upright_hi: 'एक उत्सुक छात्र, जमीनी और व्यावहारिक। भौतिक दुनिया के लिए कड़ी पढ़ाई करें और अपने कौशल बनाएं।',
+    reversed_en: 'Lack of progress, procrastination, or poor financial sense. Focus on practical goals.',
+    reversed_hi: 'प्रगति की कमी, विलंब, या खराब वित्तीय समझ। व्यावहारिक लक्ष्यों पर ध्यान दें।' },
+  { name: 'Knight of Pentacles', arcana: 'minor', suit: 'pentacles', num: 'Knight',
+    keywords: 'Hard work, productivity, routine, conservatism, methodical',
+    upright_en: 'Slow and steady wins the race. Methodical work, routine, and responsibility bring lasting results.',
+    upright_hi: 'धीमी और स्थिर जीत होती है। व्यवस्थित काम, दिनचर्या और जिम्मेदारी स्थायी परिणाम लाती है।',
+    reversed_en: 'Boredom, feeling stuck in routine, or lack of progress. Add some spark to your approach.',
+    reversed_hi: 'बोरियत, दिनचर्या में फंसा हुआ महसूस करना, या प्रगति की कमी। अपने दृष्टिकोण में कुछ उत्साह जोड़ें।' },
+  { name: 'Queen of Pentacles', arcana: 'minor', suit: 'pentacles', num: 'Queen',
+    keywords: 'Nurturing, practical, providing financially, warm-hearted',
+    upright_en: 'Practical wisdom and abundant nurturing. Create a safe, comfortable home through resourcefulness.',
+    upright_hi: 'व्यावहारिक बुद्धि और प्रचुर पोषण। संसाधनशीलता के माध्यम से एक सुरक्षित, आरामदायक घर बनाएं।',
+    reversed_en: 'Neglecting work-life balance, smothering, or financial insecurity.',
+    reversed_hi: 'कार्य-जीवन संतुलन की उपेक्षा, दम घुटाना, या वित्तीय असुरक्षा।' },
+  { name: 'King of Pentacles', arcana: 'minor', suit: 'pentacles', num: 'King',
+    keywords: 'Wealth, business, leadership, security, discipline, abundance',
+    upright_en: 'The master of the material world. Steady leadership and disciplined management create lasting empire.',
+    upright_hi: 'भौतिक दुनिया का स्वामी। स्थिर नेतृत्व और अनुशासित प्रबंधन स्थायी साम्राज्य बनाते हैं।',
+    reversed_en: 'Stubbornness, materialism, or financial recklessness. Ground yourself in what truly matters.',
+    reversed_hi: 'हठधर्मिता, भौतिकवाद, या वित्तीय लापरवाही। उस पर ध्यान केंद्रित करें जो वास्तव में मायने रखता है।' },
+];
+
+// =====================
+// STATE
+// =====================
+let currentDeck = 'all';
+let currentMode = 'single';
+let reversedEnabled = false;
+let alwaysReversed = false;
+let history = JSON.parse(localStorage.getItem('tarot_history') || '[]');
+let currentFilter = 'all';
+let spreadCards = [null, null, null];
+let spreadFlipped = [false, false, false];
+let modalReversedView = false;
+let _currentModalCard = null;
+
+function syncBodyScroll() {
+  const modalOpen = document.getElementById('modal-overlay').classList.contains('open');
+  const imageModalOpen = document.getElementById('image-modal-overlay').classList.contains('open');
+  const spreadHistoryOpen = document.getElementById('spread-history-overlay').classList.contains('open');
+  document.body.style.overflow = modalOpen || imageModalOpen || spreadHistoryOpen ? 'hidden' : '';
+}
+
+// =====================
+// HELPERS
+// =====================
+function getDeck() {
+  if (currentDeck === 'major') return CARDS.filter(c => c.arcana === 'major');
+  if (currentDeck === 'minor') return CARDS.filter(c => c.arcana === 'minor');
+  return CARDS;
+}
+
+function randomCard(pool, exclude = []) {
+  const available = pool.filter(c => !exclude.includes(c.name));
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+function isReversed() {
+  if (alwaysReversed) return true;
+  return reversedEnabled && Math.random() < 0.5;
+}
+
+function getImg(name) {
+  return CARD_IMGS[name] || '';
+}
+
+function getRemoteImg(name) {
+  const local = getImg(name);
+  return local.startsWith(W) ? REMOTE_W + local.slice(W.length) : '';
+}
+
+function handleCardImgError(img) {
+  const remote = img.dataset.remoteSrc;
+  if (remote && img.getAttribute('src') !== remote) {
+    img.onerror = null;
+    img.src = remote;
+  }
+}
+
+function cardImgAttrs(name) {
+  return `src="${getImg(name)}" data-remote-src="${getRemoteImg(name)}" onerror="handleCardImgError(this)"`;
+}
+
+function suitLabel(c) {
+  if (c.arcana === 'major') return 'Major Arcana · ' + c.num;
+  return c.suit.charAt(0).toUpperCase() + c.suit.slice(1) + ' · ' + c.num;
+}
+
+// =====================
+// SOUND ENGINE (Web Audio API - no external files needed)
+// =====================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  return audioCtx;
+}
+function playTone(freq, type, dur, vol, delay=0) {
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(vol, ctx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + dur + 0.05);
+  } catch(e) {}
+}
+function sfxDraw() {
+  // Mystical ascending arp
+  playTone(220, 'sine', 0.15, 0.18, 0);
+  playTone(330, 'sine', 0.15, 0.15, 0.1);
+  playTone(440, 'sine', 0.2,  0.12, 0.2);
+  playTone(550, 'triangle', 0.3, 0.1, 0.3);
+}
+function sfxReveal() {
+  // Shimmer sparkle chord
+  playTone(523, 'sine', 0.4, 0.15, 0);
+  playTone(659, 'sine', 0.4, 0.12, 0.05);
+  playTone(784, 'sine', 0.5, 0.10, 0.1);
+  playTone(1047,'triangle', 0.3, 0.07, 0.18);
+}
+function sfxTab() {
+  playTone(440, 'square', 0.06, 0.06);
+}
+function sfxToggle(on) {
+  playTone(on ? 660 : 440, 'square', 0.08, 0.07);
+}
+function sfxFilter() {
+  playTone(380, 'triangle', 0.1, 0.08);
+}
+
+// =====================
+// SPARKLES (DOM-based)
+// =====================
+function doSparkles(x, y) {
+  const container = document.getElementById('sparkle-container');
+  const colors = ['#f5c842','#e040a0','#8b5cf6','#ffffff','#e6a817'];
+  for (let i = 0; i < 20; i++) {
+    const el = document.createElement('div');
+    const size = 4 + Math.random() * 6;
+    const dx = (Math.random() - 0.5) * 160;
+    const dy = (Math.random() - 0.5) * 160;
+    const ox = x + (Math.random() - 0.5) * 30;
+    const oy = y + (Math.random() - 0.5) * 30;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const dur = 600 + Math.random() * 400;
+    el.style.cssText = `position:absolute;left:${ox}px;top:${oy}px;width:${size}px;height:${size}px;background:${color};border-radius:1px;transform:translate(0,0) scale(1);opacity:1;transition:transform ${dur}ms ease-out,opacity ${dur}ms ease-out;`;
+    container.appendChild(el);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      el.style.transform = `translate(${dx}px,${dy}px) scale(0)`;
+      el.style.opacity = '0';
+    }));
+    setTimeout(() => el.remove(), dur + 60);
+  }
+}
+
+// =====================
+// DRAW TAB LOGIC
+// =====================
+function drawSingleCard() {
+  sfxDraw();
+  const pool = getDeck();
+  const card = randomCard(pool);
+  const rev = isReversed();
+  addSingleToHistory(card, rev);
+
+  const area = document.getElementById('card-area');
+  area.innerHTML = '';
+  const flip = createCardFlip(card, rev, false);
+  // hint goes BELOW card, card-area is flex-column so order matters
+  const hint = Object.assign(document.createElement('div'), {
+    className: 'card-tap-hint',
+    textContent: '[ tap to reveal ]'
+  });
+  area.appendChild(flip);
+  area.appendChild(hint);
+
+  const info = document.getElementById('drawn-info');
+  const actions = document.getElementById('drawn-actions');
+  info.classList.remove('visible');
+  actions.style.display = 'none';
+  document.getElementById('drawn-name').textContent = card.name;
+  document.getElementById('drawn-meta').textContent = suitLabel(card);
+  const badge = document.getElementById('drawn-rev-badge');
+  badge.innerHTML = rev ? '<span class="drawn-reversed-badge">↕ REVERSED</span>' : '';
+  const enlargeBtn = document.getElementById('drawn-enlarge-btn');
+  enlargeBtn._card = null;
+  enlargeBtn._rev = false;
+
+  flip.addEventListener('click', () => {
+    if (flip.classList.contains('flipped')) return;
+    flip.classList.add('flipped');
+    sfxReveal();
+    const rect = flip.getBoundingClientRect();
+    doSparkles(rect.left + rect.width/2, rect.top + rect.height/2);
+    setTimeout(() => {
+      hint.remove();
+      actions.style.display = 'flex';
+      info.classList.add('visible');
+      enlargeBtn._card = card;
+      enlargeBtn._rev = rev;
+    }, 380);
+  });
+}
+
+function drawSpread() {
+  sfxDraw();
+  const pool = getDeck();
+  const drawn = [];
+  spreadCards = [];
+  spreadFlipped = [false, false, false];
+
+  for (let i = 0; i < 3; i++) {
+    const card = randomCard(pool, drawn.map(c => c.name));
+    const rev = isReversed();
+    drawn.push(card);
+    spreadCards.push({ card, rev });
+  }
+
+  addSpreadToHistory(spreadCards);
+
+  const labels = ['PAST', 'PRESENT', 'FUTURE'];
+  const container = document.getElementById('spread-cards');
+  container.innerHTML = '';
+  const infos = document.getElementById('spread-infos');
+  infos.style.display = 'none';
+  infos.innerHTML = '';
+
+  // Remove any previous hint
+  const oldHint = document.getElementById('spread-hint');
+  if (oldHint) oldHint.remove();
+
+  spreadCards.forEach(({ card, rev }, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'spread-slot';
+    const lbl = document.createElement('div');
+    lbl.className = 'spread-label';
+    lbl.textContent = labels[i];
+
+    const flip = createCardFlip(card, rev, false);
+    flip.style.width = '100px';
+    flip.style.height = '175px';
+    const enlargeBtn = document.createElement('button');
+    enlargeBtn.className = 'enlarge-btn';
+    enlargeBtn.type = 'button';
+    enlargeBtn.textContent = '⊞ ENLARGE';
+    enlargeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      openImageModal(card, rev);
+    });
+
+    slot.appendChild(lbl);
+    slot.appendChild(flip);
+    slot.appendChild(enlargeBtn);
+    container.appendChild(slot);
+
+    flip.addEventListener('click', () => {
+      if (flip.classList.contains('flipped')) return;
+      flip.classList.add('flipped');
+      sfxReveal();
+      spreadFlipped[i] = true;
+      const rect = flip.getBoundingClientRect();
+      doSparkles(rect.left + rect.width/2, rect.top + rect.height/2);
+      enlargeBtn.style.display = 'inline-block';
+
+      if (spreadFlipped.every(f => f)) {
+        const h = document.getElementById('spread-hint');
+        if (h) h.remove();
+        infos.style.display = 'flex';
+        infos.innerHTML = '';
+        spreadCards.forEach(({ card: c, rev: r }, j) => {
+          const div = document.createElement('div');
+          div.className = 'spread-card-info';
+          div.style.cursor = 'pointer';
+          div.innerHTML = `<div class="drawn-name" style="font-size:5px">${c.name}</div><div class="drawn-meta" style="font-size:11px">${labels[j]}</div>${r ? '<span class="drawn-reversed-badge" style="font-size:5px;padding:2px 4px">↕ REV</span>' : ''}`;
+          div.addEventListener('click', () => openModal(c, r));
+          infos.appendChild(div);
+        });
+      }
+    });
+  });
+
+  // Single hint, placed once, with stable id
+  const hint = document.createElement('div');
+  hint.id = 'spread-hint';
+  hint.className = 'card-tap-hint';
+  hint.textContent = '[ tap each card ]';
+  hint.style.cssText = 'margin-top:8px;text-align:center;display:block;width:100%';
+  document.getElementById('spread-area').appendChild(hint);
+}
+
+function createCardFlip(card, rev, autoFlip) {
+  const flip = document.createElement('div');
+  flip.className = 'card-flip' + (autoFlip ? ' flipped' : '');
+  flip.innerHTML = `
+    <div class="card-flip-inner">
+      <div class="card-back"><div class="card-back-pattern">🔮</div></div>
+      <div class="card-front ${rev ? 'reversed' : ''}">
+        <img ${cardImgAttrs(card.name)} alt="${card.name}" loading="lazy">
+      </div>
+    </div>`;
+  return flip;
+}
+
+// =====================
+// HISTORY
+// =====================
+function addSingleToHistory(card, rev) {
+  history.unshift({ type: 'single', name: card.name, rev, ts: Date.now() });
+  if (history.length > 30) history = history.slice(0, 30);
+  localStorage.setItem('tarot_history', JSON.stringify(history));
+}
+
+function addSpreadToHistory(cards) {
+  history.unshift({
+    type: 'spread',
+    ts: Date.now(),
+    cards: cards.map(({ card, rev }, index) => ({
+      name: card.name,
+      rev,
+      label: ['PAST', 'PRESENT', 'FUTURE'][index]
+    }))
+  });
+  if (history.length > 30) history = history.slice(0, 30);
+  localStorage.setItem('tarot_history', JSON.stringify(history));
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (!history.length) {
+    list.innerHTML = '<div class="empty-state"><span class="pixel-icon">🔮</span>No readings yet.<br>Draw your first card!</div>';
+    return;
+  }
+  list.innerHTML = `<div class="history-heading">⏳ Last ${history.length} Reading${history.length !== 1 ? 's' : ''}</div>`;
+  history.forEach((h, i) => {
+    if (h.type === 'spread') {
+      const d = new Date(h.ts);
+      const dateStr = d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+      const timeStr = d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12: true });
+      const item = document.createElement('div');
+      const cards = (h.cards || []).map(entry => ({
+        ...entry,
+        card: CARDS.find(c => c.name === entry.name)
+      })).filter(entry => entry.card);
+      if (!cards.length) return;
+      item.className = 'history-item spread-history-item';
+      item.innerHTML = `
+        <div class="history-images">
+          ${cards.map(entry => `<img ${cardImgAttrs(entry.name)} alt="${entry.name}" loading="lazy" class="${entry.rev ? 'reversed-history-img' : ''}">`).join('')}
+        </div>
+        <div class="history-info">
+          <div class="history-name">3-CARD SPREAD</div>
+          <div class="history-meta">${cards.map(entry => `${entry.label}: ${entry.name}${entry.rev ? ' | REV' : ''}`).join('<br>')}</div>
+          <div class="history-time">⏱ ${dateStr} | ${timeStr}</div>
+        </div>
+        <div class="history-num">#${i+1}</div>`;
+      item.addEventListener('click', () => openSpreadHistoryModal(cards));
+      list.appendChild(item);
+      return;
+    }
+    const card = CARDS.find(c => c.name === h.name);
+    if (!card) return;
+    const d = new Date(h.ts);
+    const dateStr = d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+    const timeStr = d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12: true });
+    const item = document.createElement('div');
+    item.className = 'history-item' + (h.rev ? ' reversed-item' : '');
+    item.innerHTML = `
+      <img ${cardImgAttrs(h.name)} alt="${h.name}" loading="lazy" style="height:60px;width:auto">
+      <div class="history-info">
+        <div class="history-name">${h.name}</div>
+        <div class="history-meta">${suitLabel(card)}${h.rev ? ' · ↕ REVERSED' : ''}</div>
+        <div class="history-time">⏱ ${dateStr} · ${timeStr}</div>
+      </div>
+      <div class="history-num">#${i+1}</div>`;
+    item.addEventListener('click', () => openModal(card, h.rev));
+    list.appendChild(item);
+  });
+}
+
+// =====================
+// INFO TAB
+// =====================
+function renderGrid() {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  const filtered = currentFilter === 'all' ? CARDS :
+    currentFilter === 'major' ? CARDS.filter(c => c.arcana === 'major') :
+    CARDS.filter(c => c.suit === currentFilter);
+
+  filtered.forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'grid-card';
+    div.innerHTML = `<img ${cardImgAttrs(card.name)} alt="${card.name}" loading="lazy"><div class="grid-card-name">${card.name}</div>`;
+    div.addEventListener('click', () => openModal(card));
+    grid.appendChild(div);
+  });
+}
+
+// =====================
+// MODAL
+// =====================
+function openModal(card, startReversed = false) {
+  _currentModalCard = card;
+  modalReversedView = startReversed;
+
+  const img = document.getElementById('modal-img');
+  img.src = getImg(card.name);
+  img.alt = card.name;
+  img.dataset.remoteSrc = getRemoteImg(card.name);
+  img.onerror = () => handleCardImgError(img);
+
+  document.getElementById('modal-title').textContent = card.name;
+  document.getElementById('modal-meta').textContent = suitLabel(card);
+  document.getElementById('modal-keywords').textContent = card.keywords;
+  document.getElementById('modal-upright-en').textContent = card.upright_en;
+  document.getElementById('modal-upright-hi').textContent = card.upright_hi;
+  document.getElementById('modal-reversed-en').textContent = card.reversed_en;
+  document.getElementById('modal-reversed-hi').textContent = card.reversed_hi;
+  document.getElementById('modal-enlarge-btn')._card = card;
+  document.getElementById('modal-overlay').classList.add('open');
+  updateModalView();
+  syncBodyScroll();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  modalReversedView = false;
+  _currentModalCard = null;
+  syncBodyScroll();
+}
+
+function updateModalView() {
+  const wrap = document.getElementById('modal-img-wrap');
+  wrap.classList.toggle('reversed-view', modalReversedView);
+
+  const tog = document.getElementById('modal-rev-toggle');
+  tog.classList.toggle('on', modalReversedView);
+
+  const lbl = document.getElementById('modal-rev-state');
+  lbl.textContent = modalReversedView ? 'ON' : 'OFF';
+  lbl.style.color = modalReversedView ? 'var(--pink)' : 'var(--text2)';
+
+  document.getElementById('modal-upright-section').classList.toggle('hidden', modalReversedView);
+  document.getElementById('modal-reversed-section').classList.toggle('hidden', !modalReversedView);
+}
+
+function openImageModal(card, reversed = false) {
+  const img = document.getElementById('image-modal-img');
+  img.src = getImg(card.name);
+  img.alt = card.name;
+  img.dataset.remoteSrc = getRemoteImg(card.name);
+  img.onerror = () => handleCardImgError(img);
+  document.getElementById('image-modal-wrap').classList.toggle('reversed-view', reversed);
+  document.getElementById('image-modal-overlay').classList.add('open');
+  syncBodyScroll();
+}
+
+function closeImageModal() {
+  document.getElementById('image-modal-overlay').classList.remove('open');
+  syncBodyScroll();
+}
+
+function openSpreadHistoryModal(cards) {
+  const grid = document.getElementById('spread-history-grid');
+  grid.innerHTML = '';
+
+  cards.forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'spread-history-card' + (entry.rev ? ' reversed-card' : '');
+    div.innerHTML = `
+      <div class="spread-history-label">${entry.label}</div>
+      <img ${cardImgAttrs(entry.name)} alt="${entry.name}" loading="lazy">
+      <div class="spread-history-card-name">${entry.name}</div>`;
+    div.addEventListener('click', () => {
+      closeSpreadHistoryModal();
+      openModal(entry.card, entry.rev);
+    });
+    grid.appendChild(div);
+  });
+
+  document.getElementById('spread-history-overlay').classList.add('open');
+  syncBodyScroll();
+}
+
+function closeSpreadHistoryModal() {
+  document.getElementById('spread-history-overlay').classList.remove('open');
+  syncBodyScroll();
+}
+
+// =====================
+// NAVIGATION
+// =====================
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector(`.nav-btn[data-tab="${tab}"]`).classList.add('active');
+  if (tab === 'history') renderHistory();
+  if (tab === 'info') renderGrid();
+}
+
+// =====================
+// EVENT LISTENERS
+// =====================
+document.querySelectorAll('[data-deck]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-deck]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDeck = btn.dataset.deck;
+    sfxFilter();
+  });
+});
+
+document.querySelectorAll('[data-mode]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMode = btn.dataset.mode;
+    document.getElementById('single-area').style.display = currentMode === 'single' ? 'block' : 'none';
+    document.getElementById('spread-area').style.display = currentMode === 'spread' ? 'block' : 'none';
+    sfxFilter();
+  });
+});
+
+document.getElementById('rev-toggle').addEventListener('click', () => {
+  reversedEnabled = !reversedEnabled;
+  if (reversedEnabled) { alwaysReversed = false; document.getElementById('always-rev-toggle').classList.remove('on'); document.getElementById('always-rev-label').textContent = 'OFF'; document.getElementById('always-rev-label').style.color = 'var(--text2)'; }
+  document.getElementById('rev-toggle').classList.toggle('on', reversedEnabled);
+  document.getElementById('rev-label').textContent = reversedEnabled ? 'ON' : 'OFF';
+  document.getElementById('rev-label').style.color = reversedEnabled ? 'var(--gold)' : 'var(--text2)';
+  sfxToggle(reversedEnabled);
+});
+
+document.getElementById('always-rev-toggle').addEventListener('click', () => {
+  alwaysReversed = !alwaysReversed;
+  if (alwaysReversed) { reversedEnabled = false; document.getElementById('rev-toggle').classList.remove('on'); document.getElementById('rev-label').textContent = 'OFF'; document.getElementById('rev-label').style.color = 'var(--text2)'; }
+  document.getElementById('always-rev-toggle').classList.toggle('on', alwaysReversed);
+  document.getElementById('always-rev-label').textContent = alwaysReversed ? 'ON' : 'OFF';
+  document.getElementById('always-rev-label').style.color = alwaysReversed ? 'var(--pink)' : 'var(--text2)';
+  sfxToggle(alwaysReversed);
+});
+
+document.getElementById('draw-btn').addEventListener('click', () => {
+  if (currentMode === 'single') drawSingleCard();
+  else drawSpread();
+});
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => { switchTab(btn.dataset.tab); sfxTab(); });
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGrid();
+    sfxFilter();
+  });
+});
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+// Modal reversed-view toggle
+document.getElementById('modal-rev-toggle').addEventListener('click', () => {
+  modalReversedView = !modalReversedView;
+  updateModalView();
+  sfxToggle(modalReversedView);
+});
+
+// Enlarge buttons open the image-only popup
+document.getElementById('drawn-enlarge-btn').addEventListener('click', function() {
+  if (this._card) openImageModal(this._card, this._rev);
+});
+
+document.getElementById('modal-enlarge-btn').addEventListener('click', function() {
+  if (this._card) openImageModal(this._card, modalReversedView);
+});
+
+document.getElementById('image-modal-close').addEventListener('click', closeImageModal);
+document.getElementById('image-modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('image-modal-overlay')) closeImageModal();
+});
+
+document.getElementById('spread-history-close').addEventListener('click', closeSpreadHistoryModal);
+document.getElementById('spread-history-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('spread-history-overlay')) closeSpreadHistoryModal();
+});
+
+</script>
+</body>
+</html>
