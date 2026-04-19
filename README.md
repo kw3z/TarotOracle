@@ -1,7 +1,8 @@
 # 💽 Auto Drive Transfer
 
-![Platform](https://fontawesome.com/icons/globe?f=classic&s=solid)
-![HTML5](https://fontawesome.com/icons/html5?f=brands&s=solid)
+![Platform](https://img.shields.io/badge/platform-Website-blue)
+![Platform](https://img.shields.io/badge/platform-Android-green)
+![HTML5](https://img.shields.io/badge/HTML5-3.10%2B-green?logo=html)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0)
 ![Status](https://img.shields.io/badge/status-active-success)
 
