@@ -49,7 +49,7 @@ You can **either download the ready-to-use `.apk`** from [Releases](../../releas
 
 ### Option 1 — Install Android APK
 1. Go to the [Releases](../../releases) page.
-2. Download the latest `Tarot Oracle-unsigned.apk`.
+2. Download the latest `TarotOracle-v1.0.apk `.
 3. Enable **Install unknown apps** in your Android settings if prompted.
 4. Tap the downloaded APK to install.
 
