@@ -47,18 +47,18 @@
 ## 🛠 Installation
 You can **either download the ready-to-use `.apk`** from [Releases](../../releases) or use the live web app.
 
-### Option 1 — Install Android APK
+### Option 1 — Use as Web App (PWA) [RECOMMENDED]
+1. Visit [tarotoracle.vercel.app](https://tarotoracle.vercel.app).
+2. Tap **Add to Home Screen** in your browser menu.
+3. Launch it like a native app — works offline too.
+
+### Option 2 — Install Android APK [LAGGY]
 1. Go to the [Releases](../../releases) page.
 2. Download the latest `TarotOracle-v1.0.apk`.
 3. Enable **Install unknown apps** in your Android settings if prompted.
 4. Tap the downloaded APK to install.
 
 > **Note:** The app is unsigned, so Android may show a security warning — this is normal for sideloaded apps.
-
-### Option 2 — Use as Web App (PWA)
-1. Visit [tarotoracle.vercel.app](https://tarotoracle.vercel.app).
-2. Tap **Add to Home Screen** in your browser menu.
-3. Launch it like a native app — works offline too.
 
 ---
 
