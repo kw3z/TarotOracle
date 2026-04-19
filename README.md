@@ -1,82 +1,80 @@
-# 💽 Auto Drive Transfer
+# ♦️ Tarot Oracle
 
-![Platform](https://img.shields.io/badge/platform-Website-blue)
-![Platform](https://img.shields.io/badge/platform-Android-green)
-![HTML5](https://img.shields.io/badge/HTML-5-green?logo=html5)
-[![License](https://img.shields.io/badge/license-GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0)
-![Status](https://img.shields.io/badge/status-active-success)
+[![Live Demo](https://img.shields.io/badge/🔮_Live_Demo-tarotoracle.vercel.app-8B5CF6?style=for-the-badge)](https://tarotoracle.vercel.app)
 
-**Auto Drive Transfer** is a Windows utility that **copies files and folders to your USB drive** with optional queuing.  
-Think of it as your personal file-transfer assistant, optimized for video collections.  
+![Platform](https://img.shields.io/badge/platform-Website-4F46E5?style=flat-square&logo=googlechrome&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)
+![Deployed](https://img.shields.io/badge/deployed-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-ready-7C3AED?style=flat-square&logo=pwa&logoColor=white)
+![Status](https://img.shields.io/badge/status-active-22C55E?style=flat-square)
+
+![HTML5](https://img.shields.io/badge/HTML-5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS-3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+[![License](https://img.shields.io/badge/license-GPLv3-3B82F6?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0)
+
+**Tarot Oracle** is a lightweight pixel-style tarot reading app that lets you **draw single cards or 3-card spreads, explore meanings, enlarge card art, and revisit your reading history**.
 
 ---
 
 ## ✨ Features
 
-- 📤 **One-Click Transfer to USB** — Automatically copies files to your pendrive.
-- 📋 **Queue Transfers** — Send multiple files and process them one-by-one in order.
-- 🖥 **Clean & Minimal UI** — Easy-to-use interface with clear buttons and no clutter.
-- 📁 **Customizable Output Folder** — Choose where renamed files are temporarily stored.
-- 🔍 **Smart Detection** — Avoids overwriting existing files in the target drive.
+- 🃏 **Card Draw** — Pull a random tarot card and explore its meaning.
+- 📖 **Card Library** — Browse all 78 tarot cards with detailed descriptions and artwork.
+- 🔮 **3-Card Spreads** — Draw past, present, and future spreads for deeper readings.
+- 🕰 **Reading History** — Revisit your past draws and reflect on previous readings.
+- 🎨 **Pixel Art Style** — Unique retro pixel aesthetic for an immersive experience.
+- 📱 **Install as App** — Works offline as a PWA, installable on Android and desktop.
+
+---
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshots/screenshot1.png" width="180"/>
+  <img src="screenshots/screenshot2.png" width="180"/>
+  <img src="screenshots/screenshot3.png" width="180"/>
+  <img src="screenshots/screenshot4.png" width="180"/>
+  <img src="screenshots/screenshot5.png" width="180"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/screenshot-wide1.png" width="920"/>
+</p>
 
 ---
 
 ## 🛠 Installation
+You can **either download the ready-to-use `.apk`** from [Releases](../../releases) or use the live web app.
 
-You can **either download the ready-to-use `.exe`** from [Releases](../../releases) or run from source.
-
-### Option 1 — Run Prebuilt `.exe`
+### Option 1 — Install Android APK
 1. Go to the [Releases](../../releases) page.
-2. Download the latest `AutoDriveTransferSetup.exe`.
-3. Double-click to run (no Python installation required).
+2. Download the latest `Tarot Oracle-unsigned.apk`.
+3. Enable **Install unknown apps** in your Android settings if prompted.
+4. Tap the downloaded APK to install.
 
-> **Note:** First launch may take a moment as dependencies load.
+> **Note:** The app is unsigned, so Android may show a security warning — this is normal for sideloaded apps.
+
+### Option 2 — Use as Web App (PWA)
+1. Visit [tarotoracle.vercel.app](https://tarotoracle.vercel.app).
+2. Tap **Add to Home Screen** in your browser menu.
+3. Launch it like a native app — works offline too.
 
 ---
 
-### Option 2 — Run from Source (Developers)
-#### Prerequisites
-- Windows 10/11
-- [Python 3.10+](https://www.python.org/downloads/windows/)
-- [pip](https://pip.pypa.io/en/stable/installation/)
+## 🧰 Tech Stack
 
-#### Setup
-## 1. Clone this repository
-<pre>git clone https://github.com/YourUsername/SmartPendriveButler.git
-cd SmartPendriveButler</pre>
+| Technology       | Purpose                                      |
+| ---------------- | -------------------------------------------- |
+| **HTML/CSS/JS**  | Core frontend — no frameworks                |
+| **Web App Manifest** | Enables PWA installability              |
+| **Service Worker** | Offline support and caching               |
+| **Vercel**       | Hosting and deployment                       |
 
-## 2. Create a virtual environment (recommended)
-<pre>python -m venv venv
-venv\Scripts\activate</pre>
+## 📜 License
+This project is licensed under the **GNU General Public License, version 3** — see the [LICENSE](LICENSE) file for details.
 
-## 3. Install dependencies
-<pre>pip install -r requirements.txt</pre>
-
-## 4. Run the app
-<pre>python smart_pendrive_butler.py</pre>
-
-# Building the `.exe` (Advanced, optional)
-We can use **Pyinstaller** for packaging:
-<pre>pip install pyinstaller
-pyinstaller SmartPendriveButler.spec</pre>
-
-The compiled `.exe` will appear in the *dist/SmartPendriveButler/* folder.
-
-# Dependencies
-| Package         | Purpose                                                     |
-| --------------- | ----------------------------------------------------------- |
-| **guessit**     | Extracts metadata (movie/series title, year) from filenames |
-| **babelfish**   | Converts and understands language codes                     |
-| **PyQt5**       | GUI framework for Windows                                   |
-| **PyInstaller** | Bundles app into a standalone `.exe`                        |
-
-Install all dependencies with:
-<pre>pip install -r requirements.txt</pre>
-
-📜 License
-This project is licensed under the **GNU General Public License, version 3 License** — see the "LICENSE" file for details.
-
-📨 Feedback & Contributions
+## 📨 Feedback & Contributions
 Found a bug? [Open an issue](../../issues)
-Have an idea? Create a feature request!
+Have an idea? [Create a feature request!](../../issues/new)
 Pull requests are welcome ❤️
