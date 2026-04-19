@@ -1,5 +1,6 @@
 {
   "name": "Tarot Oracle",
+  "id": "/",
   "short_name": "Tarot Oracle",
   "description": "A lightweight pixel-style tarot reading app that lets you draw single cards or 3-card spreads, explore meanings, enlarge card art, and revisit your reading history.",
   "start_url": "/",
@@ -19,7 +20,7 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
   "screenshots": [
     {
       "src": "screenshots/screenshot1.png",
