@@ -22,9 +22,34 @@
   ]
   "screenshots": [
     {
-    "src": "screenshots/screenshot1.png",
-    "sizes": "1280x720",
-    "type": "image/png"
+      "src": "screenshots/screenshot1.png",
+      "sizes": "550x970",
+      "type": "image/png"
+      "form-factor": "narrow"
+    },
+    {
+      "src": "screenshots/screenshot2.png",
+      "sizes": "550x1031",
+      "type": "image/png"
+      "form-factor": "narrow"
+    },
+    {
+      "src": "screenshots/screenshot3.png",
+      "sizes": "548x935",
+      "type": "image/png"
+      "form-factor": "narrow"
+    },
+    {
+      "src": "screenshots/screenshot4.png",
+      "sizes": "506x816",
+      "type": "image/png"
+      "form-factor": "narrow"
+    },
+    {
+      "src": "screenshots/screenshot5.png",
+      "sizes": "550x896",
+      "type": "image/png"
+      "form-factor": "narrow"
     }
   ]
 }
